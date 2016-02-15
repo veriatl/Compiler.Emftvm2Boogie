@@ -1,4 +1,4 @@
-package ie.nuim.cs.emftvm.core;
+package fr.emn.atlanmod.emftvm2boogie.compiler;
 
 public class EMFTVMReader {
 
