@@ -1,9 +1,5 @@
 package fr.emn.atlanmod.emftvm2boogie.core;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,17 +10,16 @@ import java.util.Stack;
 
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.m2m.atl.core.emf.EMFModel;
+import org.eclipse.m2m.atl.emftvm.CodeBlock;
 import org.eclipse.m2m.atl.emftvm.ExecEnv;
 import org.eclipse.m2m.atl.emftvm.InputRuleElement;
+import org.eclipse.m2m.atl.emftvm.Instruction;
 import org.eclipse.m2m.atl.emftvm.OutputRuleElement;
 import org.eclipse.m2m.atl.emftvm.Rule;
-
-import org.eclipse.m2m.atl.engine.vm.ASM;
 import org.eclipse.m2m.atl.engine.vm.ASMInstruction;
 import org.eclipse.m2m.atl.engine.vm.ASMInstructionWithOperand;
 import org.eclipse.m2m.atl.engine.vm.ASMOperation;
 import org.eclipse.m2m.atl.engine.vm.ASMOperation.LocalVariableEntry;
-import org.eclipse.m2m.atl.engine.vm.ASMXMLReader;
 
 import fr.emn.atlanmod.emftvm2boogie.helper.ASMReaderHelper;
 import fr.emn.atlanmod.emftvm2boogie.helper.ATLModelInjector;
@@ -36,7 +31,7 @@ public class emftvm2boogieDriver {
 
 	static ExecEnv env;
 	static EMFModel atl;
-	static ASM asm;
+	
 	static EPackage srcMM;
 	static EPackage tarMM;
 	static Map<String, String> ins = new HashMap<String, String>();
@@ -58,10 +53,9 @@ public class emftvm2boogieDriver {
 	static int loopLevel = 0;
 
 	
-	public static void genBoogie(String asmPth, String ATL, String module, String src, String srcId, String tar,
+	public static void genBoogie(String ATL, String module, String src, String srcId, String tar,
 			String tarId, String out) throws Exception {
 		env = ATLModelInjector.moduleLoader(ATL, module, src, tar, srcId, tarId);
-		asm = new ASMXMLReader().read(new BufferedInputStream(new FileInputStream(asmPth)));
 		srcMM = EcoreReaderHelper.readEcore(src);
 		tarMM = EcoreReaderHelper.readEcore(tar);
 
@@ -73,34 +67,19 @@ public class emftvm2boogieDriver {
 
 		srcsfInfo.putAll(EcoreReaderHelper.readEinfoAll(srcMM));
 		tarsfInfo.putAll(EcoreReaderHelper.readEinfoAll(tarMM));
-		for (Object operation : asm.getOperations()) {
-			ASMOperation op = (ASMOperation) operation;
-			String opName = op.getName();
-			if (!opName.endsWith("__")) {
-				if (opName.contains("__match")) {
-					rule = opName.substring("__match".length());
-					option = "match";
-					String outPth = String.format("%s%s_match.bpl", out, rule);
-					System.setOut(new PrintStream(new File(outPth)));
-					bootstrap_miningATLSource(rule);
-					printSignature(rule, option);
-					printOperation(op);
-				} else if ((opName.contains("__apply")) && (!opName.contains("ReverseBinding"))) {
-					rule = opName.substring("__apply".length());
-					option = "apply";
-					String outPth = String.format("%s%s_apply.bpl", out, rule);
-					System.setOut(new PrintStream(new File(outPth)));
-					bootstrap_miningATLSource(rule);
-					printSignature(rule, option);
-					printOperation(op);
-				}
+		
+		for(Rule rl : env.getRules()){
+			CodeBlock cb_match = rl.getMatcher();
+			for(Instruction instr : cb_match.getCode()){
+				
 			}
 		}
+		
 	}
 
 	public static void main(String[] args) throws Exception {
 
-		genBoogie(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7]);
+		genBoogie(args[1], args[2], args[3], args[4], args[5], args[6], args[7]);
 
 	}
 
