@@ -2,5 +2,13 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry kind="src" path="/org.eclipse.m2m.atl.emftvm"/>
+	<classpathentry kind="src" path="/org.eclipse.m2m.atl.core.emf"/>
+	<classpathentry kind="lib" path="/fr.emn.atlanmod.ASM2Boogie.compiler/externalDependencies/org.eclipse.emf.ecore_2.11.1.v20150805-0538.jar"/>
+	<classpathentry kind="lib" path="/fr.emn.atlanmod.ASM2Boogie.compiler/externalDependencies/org.eclipse.emf.common_2.11.0.v20150805-0538.jar"/>
+	<classpathentry kind="lib" path="/fr.emn.atlanmod.ASM2Boogie.compiler/externalDependencies/org.eclipse.emf.ecore.xmi_2.11.1.v20150805-0538.jar"/>
+	<classpathentry kind="src" path="/org.eclipse.m2m.atl.engine.vm"/>
+	<classpathentry kind="src" path="/org.eclipse.m2m.atl.core"/>
+	<classpathentry kind="src" path="/org.eclipse.m2m.atl.engine"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
