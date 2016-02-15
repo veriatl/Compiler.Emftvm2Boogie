@@ -1,4 +1,4 @@
--- @atlcompiler atl2010
+-- @atlcompiler emftvm
 
 module ER2REL; create OUT : REL from IN : ER;
 
