@@ -70,8 +70,10 @@ public class emftvm2boogieDriver {
 		
 		for(Rule rl : env.getRules()){
 			CodeBlock cb_match = rl.getMatcher();
-			for(Instruction instr : cb_match.getCode()){
-				System.out.printf("%s:	%s\n", instr.getLineNumber(), instr.getOpcode().getName());
+			if(cb_match != null){
+				for(Instruction instr : cb_match.getCode()){
+					System.out.println(instr.getOpcode());
+				}
 			}
 		}
 		
