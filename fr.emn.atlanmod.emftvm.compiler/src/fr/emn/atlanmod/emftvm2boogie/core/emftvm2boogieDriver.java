@@ -1,5 +1,7 @@
 package fr.emn.atlanmod.emftvm2boogie.core;
 
+import java.io.File;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -52,6 +54,66 @@ public class emftvm2boogieDriver {
 	static Map<Integer, List<String>> invPool = new HashMap<Integer, List<String>>();
 	static int loopLevel = 0;
 
+	static void printSignature(String rule, String option) {
+		if (option.equals("apply")) {
+			System.out.printf("implementation %s_apply (in: ref) returns ()", rule);
+		} else {
+			System.out.printf("implementation %s_matchAll() returns ()", rule);
+		}
+
+		System.out.println();
+	}
+	
+	static void printCodeBlock(CodeBlock cb) throws Exception {
+		System.out.println("{\n");
+		Map<String, String> localVars = printLocalVars(cb);
+		printInstrs(cb, localVars);
+		System.out.println("\n}");
+
+	}
+	
+	static Map<String, String> printLocalVars(CodeBlock cb) throws Exception {
+
+		System.out.printf("var %s: Seq BoxType;\n", "stk");
+
+		System.out.printf("var %s: ref;\n", "$newCol");
+
+
+
+		System.out.println();
+		return localVars;
+	}
+	
+
+	static void printInstrs(CodeBlock cb, Map<String, String> localVars) throws Exception {
+		int ln = 0;
+
+//		Set<Integer> labelsPool = bootstrap_getLabels(op);
+
+		typeStack = new TypeStack(localVars, ins, outs, srcsfInfo, tarsfInfo, parentInfo);
+
+		for (Instruction instr : cb.getCode()) {
+			
+
+			// print extra label, if any.
+//			if (labelsPool.contains(ln)) {
+//				System.out.printf("label_%d:\n", ln);
+//			}
+
+			// print instr
+//			System.out.print(printInstr(instr, localVars, ln, op.getInstructions()));
+			System.out.println(instr);
+			// acts on the type stack
+//			typeStack.act(instr);
+			ln++;
+		}
+
+		// print the last statement, equiv to return. put postcondition check
+		// here if necessary.
+//		if (labelsPool.contains(ln)) {
+//			System.out.printf("label_%d:\n", ln);
+//		}
+	}
 	
 	public static void genBoogie(String ATL, String module, String src, String srcId, String tar,
 			String tarId, String out) throws Exception {
@@ -71,9 +133,24 @@ public class emftvm2boogieDriver {
 		for(Rule rl : env.getRules()){
 			CodeBlock cb_match = rl.getMatcher();
 			if(cb_match != null){
-				for(Instruction instr : cb_match.getCode()){
-					System.out.println(instr.getOpcode());
-				}
+				rule = rl.getName();
+				option = "match";
+				//String outPth = String.format("%s%s_match.bpl", out, rule);
+				//System.setOut(new PrintStream(new File(outPth)));
+				//bootstrap_miningATLSource(rule);
+//				printSignature(rule, option);
+//				printCodeBlock(cb_match);
+			}
+			
+			CodeBlock cb_apply = rl.getApplier();
+			if(cb_apply != null){
+				rule = rl.getName();
+				option = "apply";
+				//String outPth = String.format("%s%s_match.bpl", out, rule);
+				//System.setOut(new PrintStream(new File(outPth)));
+				//bootstrap_miningATLSource(rule);
+				printSignature(rule, option);
+				printCodeBlock(cb_apply);
 			}
 		}
 		
