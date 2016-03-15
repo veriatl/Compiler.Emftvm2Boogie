@@ -1,15 +1,15 @@
 package fr.emn.atlanmod.emftvm2boogie.helper;
 
-public class ASMType {
+public class EMFTVMType {
 	TYPE type;
 	String val;	// store val of String, dtype of ref
 	
-	public ASMType(TYPE t){
+	public EMFTVMType(TYPE t){
 		type = t;
 		val = "";
 	}
 	
-	public ASMType(TYPE t, String v){
+	public EMFTVMType(TYPE t, String v){
 		type = t;
 		val = v;
 	}

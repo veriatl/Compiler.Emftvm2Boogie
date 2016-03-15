@@ -94,7 +94,7 @@ public class emftvm2boogieDriver {
 	static void printInstrs(CodeBlock cb, Map<String, String> localVars) throws Exception {
 		int ln = 0;
 
-//		Set<Integer> labelsPool = bootstrap_getLabels(op);
+		Set<Integer> labelsPool = bootstrap_getLabels(cb);
 
 		typeStack = new TypeStack(localVars, ins, outs, srcsfInfo, tarsfInfo, parentInfo);
 
@@ -102,23 +102,54 @@ public class emftvm2boogieDriver {
 			
 
 			// print extra label, if any.
-//			if (labelsPool.contains(ln)) {
-//				System.out.printf("label_%d:\n", ln);
-//			}
+			if (labelsPool.contains(ln)) {
+				System.out.printf("label_%d:\n", ln);
+			}
 
 			// print instr
 			System.out.print(printInstr(instr, localVars, ln, cb.getCode()));
 
 			// acts on the type stack
-//			typeStack.act(instr);
+			typeStack.act(instr);
 			ln++;
 		}
 
 		// print the last statement, equiv to return. put postcondition check
 		// here if necessary.
-//		if (labelsPool.contains(ln)) {
-//			System.out.printf("label_%d:\n", ln);
-//		}
+		if (labelsPool.contains(ln)) {
+			System.out.printf("label_%d:\n", ln);
+		}
+	}
+	
+
+	static Set<Integer> bootstrap_getLabels(CodeBlock cb) {
+		int ln = 0;
+		HashSet<Integer> set = new HashSet<Integer>();
+
+		for (Instruction instr : cb.getCode()) {
+			if(instr instanceof BranchInstructionImpl){
+				BranchInstructionImpl tempInstr = ((BranchInstructionImpl) instr);
+				switch (instr.getOpcode()) {
+				case GOTO:
+				{
+					
+					set.add(tempInstr.getOffset());
+					break;
+				}
+				case IF:
+				{	
+					set.add(tempInstr.getOffset());
+					set.add(ln + 1);
+					break;
+				}
+				default:
+					break;
+				}
+			}
+			ln++;
+		}
+
+		return set;
 	}
 	
 	/*
@@ -388,7 +419,7 @@ public class emftvm2boogieDriver {
 			}
 			case RETURN:
 			{
-				result = String.format("call stk := OpCode#PUSHF(stk);");
+				//
 				break;
 			}
 			case SWAP:
@@ -411,108 +442,6 @@ public class emftvm2boogieDriver {
 		}
 		
 
-		
-		
-//		if (instr instanceof ASMInstructionWithOperand) { // case of instr with
-//															// operand
-//			ASMInstructionWithOperand instro = (ASMInstructionWithOperand) instr;
-//			String operand = instro.getOperand();
-//			switch (instro.getMnemonic().toLowerCase()) {
-//			case "push":
-//				result = String.format("call stk := OpCode#Push(stk, %s);", "_" + operand);
-//				break;
-//			case "pushi":
-//				result = String.format("call stk := OpCode#Pushi(stk, %s);", operand);
-//				break;
-//			case "store":
-//				String var_store = localVars.get(operand);
-//				result = String.format("call stk, %s := OpCode#Store(stk);", var_store);
-//				break;
-//			case "load":
-//				String var_load = localVars.get(operand);
-//				result = String.format("call stk := OpCode#Load(stk, %s);", var_load);
-//				break;
-//			case "if":
-//				result = String.format("%s := $Unbox(Seq#Index(stk, Seq#Length(stk)-1));\n", "cond#" + ln);
-//				result += String.format("call stk := OpCode#Pop(stk);\n");
-//				result += String.format("if(cond#%d){goto %s;}", ln, "label_" + operand);
-//				break;
-//			case "goto":
-//				result = String.format("goto %s;", "label_" + operand);
-//				break;
-//			case "call":
-//				result = ASMReaderHelper.genCallwithReturns(operand, ln, typeStack);
-//				break;
-//			case "pcall":
-//				result = ASMReaderHelper.genVoidCall(operand, ln);
-//				break;
-//			case "set":
-////				result = printSetInstr(operand);
-//				break;
-//			case "get":
-////				result = printGetInstr(operand);
-//				break;
-//			default:
-//				result = String.format(instro.getMnemonic() + " error");
-//				break;
-//			}
-//
-//		} else { // case of instr without operand
-//			switch (instr.getMnemonic().toLowerCase()) {
-//			case "pusht":
-//				result = String.format("call stk := OpCode#Pusht(stk);");
-//				break;
-//			case "pushf":
-//				result = String.format("call stk := OpCode#Pushf(stk);");
-//				break;
-//			case "pop":
-//				result = String.format("call stk := OpCode#Pop(stk);");
-//				break;
-//			case "swap":
-//				result = String.format("call stk := OpCode#Swap(stk);");
-//				break;
-//			case "dup":
-//				result = String.format("call stk := OpCode#Dup(stk);");
-//				break;
-//			case "dup_x1":
-//				result = String.format("call stk := OpCode#DupX1(stk);");
-//				break;
-//			case "iterate":
-//				String counter = iteratorMap.get(ln);
-//				result += String.format("obj#%d := $Unbox(Seq#Index(stk, Seq#Length(stk)-1));\n", ln - 1);
-//				result += String.format("%s:=0;\n", counter);
-//				result += String.format("call stk := OpCode#Pop(stk);\n");
-//				result += String.format("while(%s<Seq#Length(obj#%d)) \n", counter, ln - 1);
-//				for (String inv : invPool.get(loopLevel)) {
-//					result += inv;
-//				}
-//				result = result + String.format("{ decreases#%d := Seq#Length(obj#%d) - %s;\n", Integer.valueOf(ln), Integer.valueOf(ln - 1), counter );
-//				result += String.format("stk := Seq#Build(stk, $Box(Seq#Index(obj#%d, %s)));", ln - 1, counter);
-//				loopLevel++;
-//				break;
-//			case "enditerate":
-//				String counter1 = enditeratorMap.get(ln);
-//				int conterLN = Integer.parseInt(counter1.substring(counter1.indexOf("#") + 1));
-//				result += String.format("%s := %s+1;\n", counter1, counter1);
-//				result = result + String.format("assert 0<= decreases#%d || Seq#Length(obj#%d) - %s == decreases#%d;\n", Integer.valueOf(conterLN), Integer.valueOf(conterLN - 1), counter1, Integer.valueOf(conterLN));
-//		        result = result + String.format("assert Seq#Length(obj#%d) - %s < decreases#%d;\n", Integer.valueOf(conterLN - 1), counter1, Integer.valueOf(conterLN) );
-//				result += String.format("}");
-//				loopLevel--;
-//				break;
-//			case "new":
-//				result = printNewInstr(ln, instrs);
-//				break;
-//			case "findme":
-//				result = String.format("call stk := OpCode#Findme(stk);");
-//				break;
-//			case "getasm":
-//				result = String.format("call stk := OpCode#GetASM(stk);");
-//				break;
-//			default:
-//				result = String.format(instr.getMnemonic() + " error");
-//				break;
-//			}
-//		}
 		result = String.format("%s\n", result);
 
 		return result;
@@ -520,7 +449,7 @@ public class emftvm2boogieDriver {
 	
 	public static void genBoogie(String ATL, String module, String src, String srcId, String tar,
 			String tarId, String out) throws Exception {
-		env = ATLModelInjector.moduleLoader(ATL, module, src, tar, srcId, tarId);
+		env = ATLModelInjector.moduleLoader(ATL, module, src, tar, srcId, tarId);	// EMF_Env
 		srcMM = EcoreReaderHelper.readEcore(src);
 		tarMM = EcoreReaderHelper.readEcore(tar);
 

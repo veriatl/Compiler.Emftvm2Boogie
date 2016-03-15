@@ -4,13 +4,13 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.regex.Pattern;
 
-public class ASMSignatureHelper {
+public class EMFTVMSignatureHelper {
 	private static Pattern pattern1 = Pattern.compile("^.*\\("); //$NON-NLS-1$
 	private static Pattern simple = Pattern.compile("^J|I|B|S|D|A|(M|N)[^;]*;|L"); //$NON-NLS-1$
 	private static Pattern pattern2 = Pattern.compile("^(Q|G|C|E|O).*"); //$NON-NLS-1$
 
 	
-	private static String typeInfer(String op, Stack<ASMType> stk,
+	private static String typeInfer(String op, Stack<EMFTVMType> stk,
 			Map<String, String> ins,Map<String, String> outs, 
 			Map<String, String> srcsf, Map<String, String> tarsf){
 		String opName = getOpName(op);
@@ -36,30 +36,30 @@ public class ASMSignatureHelper {
 	
 	
 	
-	public static ASMType getReturnASMType(String s, Stack<ASMType> stk,
+	public static EMFTVMType getReturnASMType(String s, Stack<EMFTVMType> stk,
 			Map<String, String> ins,Map<String, String> outs, 
 			Map<String, String> srcsf, Map<String, String> tarsf){
 		String r = getReturnType(s);	// return type;
 		String id = r.substring(0,1);	// first letter, id the type.
 		
 		switch(id){
-			case "S": return new ASMType(TYPE.STRING);
-			case "I": return new ASMType(TYPE.INT);
-			case "B": return new ASMType(TYPE.BOOL);
+			case "S": return new EMFTVMType(TYPE.STRING);
+			case "I": return new EMFTVMType(TYPE.INT);
+			case "B": return new EMFTVMType(TYPE.BOOL);
 			case "J": {	//TODO
 				String tp = typeInfer(s, stk, ins,outs,srcsf,tarsf);
-				return new ASMType(TYPE.REF, tp);
+				return new EMFTVMType(TYPE.REF, tp);
 			}
 			case "M": 
 			case "N": {
 				String rest = r.substring(1, r.length());
-				return new ASMType(TYPE.REF, rest);
+				return new EMFTVMType(TYPE.REF, rest);
 			}
 			case "Q": {	
 				String tp = typeInfer(s, stk, ins,outs,srcsf,tarsf);
-				return new ASMType(TYPE.SEQ, tp);
+				return new EMFTVMType(TYPE.SEQ, tp);
 			}
-			default: return new ASMType(TYPE.UNKNOWN);
+			default: return new EMFTVMType(TYPE.UNKNOWN);
 		} 
 	}
 	
