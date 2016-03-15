@@ -16,6 +16,7 @@ import org.eclipse.m2m.atl.emftvm.CodeBlock;
 import org.eclipse.m2m.atl.emftvm.ExecEnv;
 import org.eclipse.m2m.atl.emftvm.InputRuleElement;
 import org.eclipse.m2m.atl.emftvm.Instruction;
+import org.eclipse.m2m.atl.emftvm.LocalVariable;
 import org.eclipse.m2m.atl.emftvm.Opcode;
 import org.eclipse.m2m.atl.emftvm.OutputRuleElement;
 import org.eclipse.m2m.atl.emftvm.Rule;
@@ -70,22 +71,36 @@ public class emftvm2boogieDriver {
 		System.out.println();
 	}
 	
-	static void printCodeBlock(CodeBlock cb) throws Exception {
+	static void printCodeBlock(CodeBlock cb, String option) throws Exception {
 		System.out.println("{\n");
-		Map<String, String> localVars = printLocalVars(cb);
+		Map<String, String> localVars = printLocalVars(cb, option);
 		printInstrs(cb, localVars);
 		System.out.println("\n}");
 
 	}
 	
-	static Map<String, String> printLocalVars(CodeBlock cb) throws Exception {
+	static Map<String, String> printLocalVars(CodeBlock cb, String option) throws Exception {
 
 		System.out.printf("var %s: Seq BoxType;\n", "stk");
-
 		System.out.printf("var %s: ref;\n", "$newCol");
+		// for apply operation, there is a implicit copy: link := in;
+		if (option.equals("apply")) {
+			System.out.println("__trace__ := in;");
+		}
+		
+		for (LocalVariable v : cb.getLocalVariables()) {
+			System.out.printf("var %s: ref;\t//slot: %s\n", v.getName(), v.getSlot());
+			localVars.put(Integer.toString(v.getSlot()), v.getName());
+		}
 
+		//TODO bootstrap the localvars of other code block, if, iter etc.
+		//bootstrap_newVars(op);
+		
+		// for all operation, initialize the local operand stack;
+		System.out.printf("%s := %s();\n", "stk", "OpCode#Aux#InitStk");
+		
 
-
+		
 		System.out.println();
 		return localVars;
 	}
@@ -152,6 +167,111 @@ public class emftvm2boogieDriver {
 		return set;
 	}
 	
+	static String printNewInstr(int ln, List<ASMInstruction> instrs) throws Exception {
+
+		String operatedHeap = "???";
+		String datatype = "???";
+		ASMInstruction prev1 = getInstrAt(instrs, ln - 1);
+
+		if (prev1 instanceof ASMInstructionWithOperand && prev1.getMnemonic().toLowerCase().equals("push")) {
+			ASMInstructionWithOperand prev1o = (ASMInstructionWithOperand) prev1;
+			String prev1op = prev1o.getOperand();
+
+			if (prev1op.equals("#native")) {
+				operatedHeap = "$linkHeap";
+			} else {
+				operatedHeap = "$tarHeap";
+			}
+
+		}
+
+		// todo: treate set, seq.. collection differently
+		String result = "assert Seq#Length(stk) >= 2;\n";
+		result += String.format("havoc obj#%d;\n", ln);
+		result += String.format("" + "assume obj#%d!= null && !read(%s, obj#%d, alloc) "
+				+ "&& dtype(obj#%d) == classifierTable[($Unbox(Seq#Index(stk, Seq#Length(stk)-1)): String),"
+				+ "($Unbox(Seq#Index(stk, Seq#Length(stk)-2)): String)];\n", ln, operatedHeap, ln, ln);
+		result += String.format("%s := update(%s, obj#%d, alloc, true);\n", operatedHeap, operatedHeap, ln);
+		result += String.format("assume $IsGoodHeap(%s);\n", operatedHeap);
+		result += String.format("assume $HeapSucc(old(%s), %s);\n", operatedHeap, operatedHeap);
+
+		// establish injectivity between created target element and its
+		// corresponding source element(s).
+		if (operatedHeap.equals("$tarHeap")) {
+			String lhs = "";
+			lhs = String.format("Seq#Singleton(%s)", inIds.get(0));
+			for (String in : inIds.subList(1, inIds.size())) {
+				lhs = String.format("Seq#Build(%s,%s)", lhs, in);
+			}
+			result += String.format("assume getTarsBySrcs(%s) == obj#%d;\n", lhs, ln);
+		}
+		result += String.format("stk := Seq#Build(Seq#Take(stk, Seq#Length(stk)-2), $Box(obj#%d));\n", ln);
+		return result;
+	}
+
+	static String printGetInstr(String operand) throws Exception {
+		String operatedHeap = "???";
+		String objType = typeStack.top().getVal();
+		String fieldName = objType + "." + operand;
+
+		fieldName = EcoreReaderHelper.getAbstractStructuralFeatureName(fieldName, objType, operand, srcsfInfo,
+				tarsfInfo, parentInfo);
+
+		if (ins.containsValue(objType)) {
+			operatedHeap = "$srcHeap";
+		} else if (outs.containsValue(objType)) {
+			operatedHeap = "$tarHeap";
+		} else {
+			operatedHeap = "$linkHeap";
+		}
+
+		String result = "assert Seq#Length(stk) >= 1;\n";
+		result += "assert $Unbox(Seq#Index(stk, Seq#Length(stk)-1)) != null;\n";
+		if (!(operatedHeap.equals("$linkHeap") && operand.equals("links"))) {
+			result += String.format("assert read(%s, $Unbox(Seq#Index(stk, Seq#Length(stk)-1)),alloc);\n",
+					operatedHeap);
+		}
+		result += String.format("stk := Seq#Build(Seq#Take(stk, Seq#Length(stk)-1), $Box(" + "read(%s,"
+				+ "$Unbox(Seq#Index(stk, Seq#Length(stk)-1))," + "%s" + ")));", operatedHeap, fieldName);
+		return result;
+	}
+
+	// TODO need info from ecore to determine operand's type to coerce.
+	static String printSetInstr(String operand) throws Exception {
+
+		String objType = typeStack.get(typeStack.size() - 2).getVal();
+		String fieldName = objType + "." + operand;
+
+		fieldName = EcoreReaderHelper.getAbstractStructuralFeatureName(fieldName, objType, operand, srcsfInfo,
+				tarsfInfo, parentInfo);
+
+		String result = "assert Seq#Length(stk) >= 2;\n";
+		result += "assert $Unbox(Seq#Index(stk, Seq#Length(stk)-2)) != null;\n";
+		result += "assert read($tarHeap, $Unbox(Seq#Index(stk, Seq#Length(stk)-2)), alloc);\n";
+
+		if (tarsfInfo.containsKey(fieldName) && tarsfInfo.get(fieldName).startsWith("Seq;")) { // isCollection
+			result += "havoc $newCol;\n";
+			result += "assume dtype($newCol) == class._System.array;\n";
+			result += "assume $newCol != null && read($tarHeap, $newCol, alloc);\n";
+			result += String.format(
+					"assume Seq#FromArray($tarHeap,$newCol) == Seq#Append(Seq#FromArray($tarHeap, read($tarHeap, $Unbox(Seq#Index(stk, Seq#Length(stk)-2)), %s)), Seq#FromArray($tarHeap, $Unbox(Seq#Index(stk, Seq#Length(stk)-1))));\n",
+					fieldName);
+			result += String.format(
+					"$tarHeap := update($tarHeap, $Unbox(Seq#Index(stk, Seq#Length(stk)-2)), %s, $newCol);\n",
+					fieldName);
+
+		} else { // is normal field
+			result += String.format("$tarHeap := update($tarHeap, " + "$Unbox(Seq#Index(stk, Seq#Length(stk)-2)),"
+					+ "%s," + "$Unbox(Seq#Index(stk, Seq#Length(stk)-1)));\n", fieldName);
+		}
+
+		result += "assume $IsGoodHeap($tarHeap);\n";
+		result += "stk := Seq#Take(stk, Seq#Length(stk)-2);\n";
+		return result;
+
+	}
+
+	
 	/*
 	 * instr: the instruction localVars: local variables table ln : lint number
 	 */
@@ -160,21 +280,23 @@ public class emftvm2boogieDriver {
 		String result = "";
 		
 		if (instr instanceof FieldInstructionImpl) {
-			FieldInstructionImpl instro = (FieldInstructionImpl) instr;
-
-			switch (instro.getOpcode()) {
+			FieldInstructionImpl tInstr = (FieldInstructionImpl) instr;
+			
+			String operand = tInstr.getFieldname();
+			result = String.format("//%s: %s \n", ln, tInstr.getOpcode());
+			switch (tInstr.getOpcode()) {
 			case ADD:
 			{
 				break;
 			}
 			case GET:
 			{
-	//			result = printGetInstr(operand);
+				result += printGetInstr(operand);
 				break;
 			}
 			case GET_STATIC:
 			{
-	//			result = printGetInstr(operand);
+				//result += printGetInstr(operand);
 				break;
 			}
 			case INSERT:
@@ -188,28 +310,30 @@ public class emftvm2boogieDriver {
 				break;
 			}
 			case SET:
-	//			result = printSetInstr(operand);
+				result += printSetInstr(operand);
 				break;
 			case SET_STATIC:
 			{
-				
+				//result += printSetInstr(operand);
 				break;
 			}
 			default:
-				result = String.format(instr.getOpcode() + " NOT SUPPORT");
+				result += String.format(instr.getOpcode() + " NOT SUPPORT");
 				break;
 			}
 		}else if(instr instanceof LocalVariableInstructionImpl){
+			LocalVariableInstructionImpl tInstr = ((LocalVariableInstructionImpl) instr);
+			
 			switch (instr.getOpcode()) {
 			case STORE:
-			{	
-				String var_store = localVars.get(((LocalVariableInstructionImpl) instr).getLocalVariable());
+			{			
+				String var_store = tInstr.getLocalVariable().getName();
 				result = String.format("call stk, %s := OpCode#STORE(stk);", var_store);
 				break;
 			}
 			case LOAD:
 			{	
-				String var_load = localVars.get(((LocalVariableInstructionImpl) instr).getLocalVariable());
+				String var_load =tInstr.getLocalVariable().getName();
 				result = String.format("call stk := OpCode#LOAD(stk, %s);", var_load);
 				break;
 			}
@@ -220,27 +344,29 @@ public class emftvm2boogieDriver {
 			}
 			}
 		}else if(instr instanceof BranchInstructionImpl){
+			BranchInstructionImpl tInstr = ((BranchInstructionImpl) instr);
+			
 			switch (instr.getOpcode()) {
 			case ENDITERATE:
 			{
 				String counter1 = enditeratorMap.get(ln);
 				int conterLN = Integer.parseInt(counter1.substring(counter1.indexOf("#") + 1));
 				result += String.format("%s := %s+1;\n", counter1, counter1);
-				result = result + String.format("assert 0<= decreases#%d || Seq#Length(obj#%d) - %s == decreases#%d;\n", Integer.valueOf(conterLN), Integer.valueOf(conterLN - 1), counter1, Integer.valueOf(conterLN));
-		        result = result + String.format("assert Seq#Length(obj#%d) - %s < decreases#%d;\n", Integer.valueOf(conterLN - 1), counter1, Integer.valueOf(conterLN) );
+				result += String.format("assert 0<= decreases#%d || Seq#Length(obj#%d) - %s == decreases#%d;\n", Integer.valueOf(conterLN), Integer.valueOf(conterLN - 1), counter1, Integer.valueOf(conterLN));
+		        result += String.format("assert Seq#Length(obj#%d) - %s < decreases#%d;\n", Integer.valueOf(conterLN - 1), counter1, Integer.valueOf(conterLN) );
 				result += String.format("}");
 				loopLevel--;
 				break;
 			}
 			case GOTO:
 			{
-				int operand = ((BranchInstructionImpl) instr).getOffset();
+				int operand = tInstr.getOffset();
 				result = String.format("goto %s;", "label_" + Integer.toString(operand));
 				break;
 			}
 			case IF:
 			{	
-				int operand = ((BranchInstructionImpl) instr).getOffset();
+				int operand = tInstr.getOffset();
 				result = String.format("%s := $Unbox(Seq#Index(stk, Seq#Length(stk)-1));\n", "cond#" + ln);
 				result += String.format("call stk := OpCode#POP(stk);\n");
 				result += String.format("if(cond#%d){goto %s;}", ln, "label_" + Integer.toString(operand));
@@ -248,7 +374,7 @@ public class emftvm2boogieDriver {
 			}
 			case IFN: 
 			{
-				int operand = ((BranchInstructionImpl) instr).getOffset();
+				int operand = tInstr.getOffset();
 				result = String.format("%s := $Unbox(Seq#Index(stk, Seq#Length(stk)-1));\n", "cond#" + ln);
 				result += String.format("call stk := OpCode#POP(stk);\n");
 				result += String.format("if(!cond#%d){goto %s;}", ln, "label_" + Integer.toString(operand));
@@ -274,6 +400,8 @@ public class emftvm2boogieDriver {
 				break;
 			}
 		}else if(instr instanceof CodeBlockInstructionImpl){
+			CodeBlockInstructionImpl tInstr = ((CodeBlockInstructionImpl) instr);
+			
 			switch (instr.getOpcode()) {
 			case AND:
 			{
@@ -300,6 +428,8 @@ public class emftvm2boogieDriver {
 				break;
 			}
 		}else if(instr instanceof InvokeInstructionImpl){
+			InvokeInstructionImpl tInstr = ((InvokeInstructionImpl) instr);
+			
 			switch (instr.getOpcode()) {
 			case INVOKE_CB_S:
 			{
@@ -470,8 +600,8 @@ public class emftvm2boogieDriver {
 				//String outPth = String.format("%s%s_match.bpl", out, rule);
 				//System.setOut(new PrintStream(new File(outPth)));
 				//bootstrap_miningATLSource(rule);
-//				printSignature(rule, option);
-//				printCodeBlock(cb_match);
+				printSignature(rule, option);
+				printCodeBlock(cb_match, option);
 			}
 			
 			CodeBlock cb_apply = rl.getApplier();
@@ -482,7 +612,7 @@ public class emftvm2boogieDriver {
 				//System.setOut(new PrintStream(new File(outPth)));
 				//bootstrap_miningATLSource(rule);
 				printSignature(rule, option);
-				printCodeBlock(cb_apply);
+				printCodeBlock(cb_apply, option);
 			}
 			
 			

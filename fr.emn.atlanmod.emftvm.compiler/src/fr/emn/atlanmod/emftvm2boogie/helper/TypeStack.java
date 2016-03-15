@@ -30,17 +30,7 @@ public class TypeStack{
 	Map<String, String> tarsf;
 	Map<String, String> par;
 	
-	public static void main(String[] args) throws Exception {
-		String s = "NTransientLinkSet;.getLinksByRule(S):MTransientLink";
-		int n = EMFTVMSignatureHelper.getNbArgs(s);
-		//ASMType x = ASMSignatureHelper.getReturnASMType(s, stk);
-		String r = EMFTVMSignatureHelper.getReturnType(s);
-		String sig = EMFTVMSignatureHelper.getOpFullName(s);
-		System.out.println(sig);
-		
-		
-		
-	}
+
 	
 	public TypeStack(Map<String, String> lvars, 
 			Map<String, String> inputElements, 
@@ -168,17 +158,8 @@ public class TypeStack{
 			{	
 				//TODO localvars
 				LoadImpl tempInstr = (LoadImpl) instr;
-				String operand = tempInstr.getLocalVariable().getName();
-				String tp = localVars.get(operand);
-				if(ins.containsKey(tp)){
-					stk.push(new EMFTVMType(TYPE.REF, ins.get(tp)));
-				}else if(outs.containsKey(tp)){
-					stk.push(new EMFTVMType(TYPE.REF, outs.get(tp)));
-				}else if(tp.equals("link")){
-					stk.push(new EMFTVMType(TYPE.REF, "Native$TransientLink"));
-				}else{
-					stk.push(new EMFTVMType(TYPE.REF, tp+":Unknown"));
-				}
+				String type = tempInstr.getLocalVariable().getType();
+				stk.push(new EMFTVMType(TYPE.REF, type));
 				break;
 			}
 			default:
