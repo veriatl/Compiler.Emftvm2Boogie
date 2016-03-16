@@ -167,17 +167,30 @@ public class emftvm2boogieDriver {
 		return set;
 	}
 	
-	static String printNewInstr(int ln, List<ASMInstruction> instrs) throws Exception {
+	static Instruction getInstrAt(List<Instruction> instrs, int ln) {
+
+		int i = 0;
+		for (Instruction instr : instrs) {
+			if (i == ln) {
+				return instr;
+			}
+			i++;
+		}
+		return null;
+	}
+	
+	static String printNewInstr(int ln, List<Instruction> instrs, String mm) throws Exception {
 
 		String operatedHeap = "???";
 		String datatype = "???";
-		ASMInstruction prev1 = getInstrAt(instrs, ln - 1);
+		
+		Instruction prev1 = getInstrAt(instrs, ln - 1);
 
-		if (prev1 instanceof ASMInstructionWithOperand && prev1.getMnemonic().toLowerCase().equals("push")) {
-			ASMInstructionWithOperand prev1o = (ASMInstructionWithOperand) prev1;
-			String prev1op = prev1o.getOperand();
+		if (prev1 instanceof PushImpl) {
+			PushImpl op = (PushImpl) prev1;
+			String mmName = op.getValue().toString();
 
-			if (prev1op.equals("#native")) {
+			if (mmName.equals("#native")) {
 				operatedHeap = "$linkHeap";
 			} else {
 				operatedHeap = "$tarHeap";
@@ -185,7 +198,48 @@ public class emftvm2boogieDriver {
 
 		}
 
-		// todo: treate set, seq.. collection differently
+		String result = "assert Seq#Length(stk) >= 1;\n";
+		result += String.format("havoc obj#%d;\n", ln);
+		result += String.format("" + "assume obj#%d!= null && !read(%s, obj#%d, alloc) "
+				+ "&& dtype(obj#%d) == classifierTable[_%s,"
+				+ "($Unbox(Seq#Index(stk, Seq#Length(stk)-1)): String)];\n", ln, operatedHeap, ln, ln, mm);
+		result += String.format("%s := update(%s, obj#%d, alloc, true);\n", operatedHeap, operatedHeap, ln);
+		result += String.format("assume $IsGoodHeap(%s);\n", operatedHeap);
+		result += String.format("assume $HeapSucc(old(%s), %s);\n", operatedHeap, operatedHeap);
+
+		// establish injectivity between created target element and its
+		// corresponding source element(s).
+		if (operatedHeap.equals("$tarHeap")) {
+			String lhs = "";
+			lhs = String.format("Seq#Singleton(%s)", inIds.get(0));
+			for (String in : inIds.subList(1, inIds.size())) {
+				lhs = String.format("Seq#Build(%s,%s)", lhs, in);
+			}
+			result += String.format("assume getTarsBySrcs(%s) == obj#%d;\n", lhs, ln);
+		}
+		result += String.format("stk := Seq#Build(Seq#Take(stk, Seq#Length(stk)-1), $Box(obj#%d));\n", ln);
+		return result;
+	}
+	
+	static String printNew_SInstr(int ln, List<Instruction> instrs) throws Exception {
+
+		String operatedHeap = "???";
+		String datatype = "???";
+		
+		Instruction prev1 = getInstrAt(instrs, ln - 1);
+
+		if (prev1 instanceof PushImpl) {
+			PushImpl op = (PushImpl) prev1;
+			String mmName = op.getValue().toString();
+
+			if (mmName.equals("#native")) {
+				operatedHeap = "$linkHeap";
+			} else {
+				operatedHeap = "$tarHeap";
+			}
+
+		}
+
 		String result = "assert Seq#Length(stk) >= 2;\n";
 		result += String.format("havoc obj#%d;\n", ln);
 		result += String.format("" + "assume obj#%d!= null && !read(%s, obj#%d, alloc) "
@@ -209,7 +263,7 @@ public class emftvm2boogieDriver {
 		return result;
 	}
 
-	static String printGetInstr(String operand) throws Exception {
+	static String printGetInstr(String operand, boolean isStatic) throws Exception {
 		String operatedHeap = "???";
 		String objType = typeStack.top().getVal();
 		String fieldName = objType + "." + operand;
@@ -231,13 +285,18 @@ public class emftvm2boogieDriver {
 			result += String.format("assert read(%s, $Unbox(Seq#Index(stk, Seq#Length(stk)-1)),alloc);\n",
 					operatedHeap);
 		}
-		result += String.format("stk := Seq#Build(Seq#Take(stk, Seq#Length(stk)-1), $Box(" + "read(%s,"
-				+ "$Unbox(Seq#Index(stk, Seq#Length(stk)-1))," + "%s" + ")));", operatedHeap, fieldName);
+		if(isStatic){
+			result += String.format("stk := Seq#Build(Seq#Take(stk, Seq#Length(stk)-1), $Box(" + "read(%s,"
+				+ "toRef($Unbox(Seq#Index(stk, Seq#Length(stk)-1)))," + "%s" + ")));\n", operatedHeap, fieldName);
+		}else{
+			result += String.format("stk := Seq#Build(Seq#Take(stk, Seq#Length(stk)-1), $Box(" + "read(%s,"
+					+ "$Unbox(Seq#Index(stk, Seq#Length(stk)-1))," + "%s" + ")));\n", operatedHeap, fieldName);
+		}
 		return result;
 	}
 
 	// TODO need info from ecore to determine operand's type to coerce.
-	static String printSetInstr(String operand) throws Exception {
+	static String printAddInstr(String operand) throws Exception {
 
 		String objType = typeStack.get(typeStack.size() - 2).getVal();
 		String fieldName = objType + "." + operand;
@@ -261,8 +320,10 @@ public class emftvm2boogieDriver {
 					fieldName);
 
 		} else { // is normal field
+			result += String.format("assert !isSet(acc, %s, %s)", "$Unbox(Seq#Index(stk, Seq#Length(stk)-1));\n", fieldName);
 			result += String.format("$tarHeap := update($tarHeap, " + "$Unbox(Seq#Index(stk, Seq#Length(stk)-2)),"
 					+ "%s," + "$Unbox(Seq#Index(stk, Seq#Length(stk)-1)));\n", fieldName);
+			result += String.format("acc := set(acc, %s, %s, true);", "$Unbox(Seq#Index(stk, Seq#Length(stk)-1));\n", fieldName);
 		}
 
 		result += "assume $IsGoodHeap($tarHeap);\n";
@@ -272,6 +333,75 @@ public class emftvm2boogieDriver {
 	}
 
 	
+	static String printRemoveInstr(String operand) throws Exception {
+
+		String objType = typeStack.get(typeStack.size() - 2).getVal();
+		String fieldName = objType + "." + operand;
+
+		String o = "$Unbox(Seq#Index(stk, Seq#Length(stk)-2))";
+		String v = "$Unbox(Seq#Index(stk, Seq#Length(stk)-1))";
+		fieldName = EcoreReaderHelper.getAbstractStructuralFeatureName(fieldName, objType, operand, srcsfInfo,
+				tarsfInfo, parentInfo);
+
+		String result = "assert Seq#Length(stk) > 1;\n";
+		result += String.format("assert %s != null;\n", o);	
+		result += String.format("assert read($tarHeap, %s, alloc);\n", o);
+
+		
+		
+		
+		
+		return result;
+
+	}
+
+	
+	static String printInsertInstr(String operand) throws Exception {
+
+		String objType = typeStack.get(typeStack.size() - 3).getVal();
+		String fieldName = objType + "." + operand;
+
+		String o = "$Unbox(Seq#Index(stk, Seq#Length(stk)-3))";
+		String v = "$Unbox(Seq#Index(stk, Seq#Length(stk)-2))";
+		String i = "$Unbox(Seq#Index(stk, Seq#Length(stk)-1))";
+		fieldName = EcoreReaderHelper.getAbstractStructuralFeatureName(fieldName, objType, operand, srcsfInfo,
+				tarsfInfo, parentInfo);
+
+		String result = "assert Seq#Length(stk) > 2;\n";
+		result += String.format("assert %s != null;\n", o);	
+		result += String.format("assert read($tarHeap, %s, alloc);\n", o);
+
+
+
+		return result;
+
+	}
+
+	static String printSetInstr(String operand, boolean isStatic) throws Exception {
+
+		String objType = typeStack.get(typeStack.size() - 2).getVal();
+		String fieldName = objType + "." + operand;
+
+		fieldName = EcoreReaderHelper.getAbstractStructuralFeatureName(fieldName, objType, operand, srcsfInfo,
+				tarsfInfo, parentInfo);
+
+		String result = "assert Seq#Length(stk) >= 2;\n";
+		result += "assert $Unbox(Seq#Index(stk, Seq#Length(stk)-2)) != null;\n";
+		result += "assert read($tarHeap, $Unbox(Seq#Index(stk, Seq#Length(stk)-2)), alloc);\n";
+
+		if(isStatic){
+			result += String.format("$tarHeap := update($tarHeap, " + "toRef($Unbox(Seq#Index(stk, Seq#Length(stk)-2))),"
+					+ "%s," + "$Unbox(Seq#Index(stk, Seq#Length(stk)-1)));\n", fieldName);
+		}else{
+			result += String.format("$tarHeap := update($tarHeap, " + "$Unbox(Seq#Index(stk, Seq#Length(stk)-2)),"
+					+ "%s," + "$Unbox(Seq#Index(stk, Seq#Length(stk)-1)));\n", fieldName);
+		}
+
+		result += "assume $IsGoodHeap($tarHeap);\n";
+		result += "stk := Seq#Take(stk, Seq#Length(stk)-2);\n";
+		return result;
+
+	}
 	/*
 	 * instr: the instruction localVars: local variables table ln : lint number
 	 */
@@ -287,16 +417,17 @@ public class emftvm2boogieDriver {
 			switch (tInstr.getOpcode()) {
 			case ADD:
 			{
+				result += printAddInstr(operand);
 				break;
 			}
 			case GET:
 			{
-				result += printGetInstr(operand);
+				result += printGetInstr(operand, false);
 				break;
 			}
 			case GET_STATIC:
 			{
-				//result += printGetInstr(operand);
+				result += printGetInstr(operand, true);
 				break;
 			}
 			case INSERT:
@@ -306,15 +437,15 @@ public class emftvm2boogieDriver {
 			}
 			case REMOVE:
 			{
-				
+				//
 				break;
 			}
 			case SET:
-				result += printSetInstr(operand);
+				result += printSetInstr(operand, false);
 				break;
 			case SET_STATIC:
 			{
-				//result += printSetInstr(operand);
+				result += printSetInstr(operand, true);
 				break;
 			}
 			default:
@@ -513,12 +644,13 @@ public class emftvm2boogieDriver {
 			}
 			case NEW:
 			{
-//				result = printNewInstr(ln, instrs);
+				NewImpl tempInstr = (NewImpl) instr;	
+				result = printNewInstr(ln, instrs, tempInstr.getModelname());
 				break;
 			}
 			case NEW_S:
 			{
-				//
+				result = printNew_SInstr(ln, instrs);
 				break;
 			}
 			case NOT:
@@ -549,7 +681,7 @@ public class emftvm2boogieDriver {
 			}
 			case RETURN:
 			{
-				//
+				result = String.format("goto %s;", "label_END");
 				break;
 			}
 			case SWAP:
