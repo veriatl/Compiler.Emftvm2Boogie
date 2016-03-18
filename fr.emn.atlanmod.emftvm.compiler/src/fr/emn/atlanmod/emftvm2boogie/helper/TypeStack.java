@@ -9,6 +9,7 @@ import org.eclipse.m2m.atl.emftvm.impl.CodeBlockInstructionImpl;
 import org.eclipse.m2m.atl.emftvm.impl.FieldInstructionImpl;
 import org.eclipse.m2m.atl.emftvm.impl.FindtypeImpl;
 import org.eclipse.m2m.atl.emftvm.impl.GetImpl;
+import org.eclipse.m2m.atl.emftvm.impl.GetcbImpl;
 import org.eclipse.m2m.atl.emftvm.impl.InvokeInstructionImpl;
 import org.eclipse.m2m.atl.emftvm.impl.LoadImpl;
 import org.eclipse.m2m.atl.emftvm.impl.LocalVariableInstructionImpl;
@@ -203,6 +204,11 @@ public class TypeStack{
 			case AND:
 			{
 				//
+				break;
+			}
+			case GETCB:{
+				GetcbImpl tInstr = (GetcbImpl)instr;
+				stk.push(new EMFTVMType(TYPE.CB, tInstr.getCodeBlock().toString()));
 				break;
 			}
 			case IMPLIES:

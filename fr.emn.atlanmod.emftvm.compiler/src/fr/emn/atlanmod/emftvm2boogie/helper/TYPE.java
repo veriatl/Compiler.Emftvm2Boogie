@@ -10,6 +10,7 @@ public enum TYPE {
     SET, 
     SEQ, 
     ORDEREDSET, 
+    CB,//CodeBlock
     BAG;
 
 
