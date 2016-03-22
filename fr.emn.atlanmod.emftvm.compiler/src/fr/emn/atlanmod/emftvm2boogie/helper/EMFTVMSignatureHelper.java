@@ -10,74 +10,31 @@ public class EMFTVMSignatureHelper {
 	private static Pattern pattern2 = Pattern.compile("^(Q|G|C|E|O).*"); //$NON-NLS-1$
 
 	
-	private static String typeInfer(String op, Stack<EMFTVMType> stk,
+	public static EMFTVMType getReturnEMFTVMType(String opName, Stack<EMFTVMType> stk,
 			Map<String, String> ins,Map<String, String> outs, 
 			Map<String, String> srcsf, Map<String, String> tarsf){
-		String opName = getOpName(op);
-		String res;
+		EMFTVMType res = new EMFTVMType(TYPE.REF, "Unknown");
+		String resTp;
 		switch(opName){
-		case "getSourceElement": res = ins.get(stk.get(stk.size()-1).getVal()); break;
-		case "getTargetElement": res = outs.get(stk.get(stk.size()-1).getVal()); break;
-		case "allInstancesFrom": res = "Seq;"+stk.get(stk.size()-2).getVal(); break;
-		case "__resolve__": { // being copied by ASMReaderHelper.genCallwithReturns
-			String tp = stk.get(stk.size()-1).getVal();
-			switch(tp){
-			case "EString": res = "String";break;
-			case "EInt": res= "int";break;
-			case "EBool": res= "bool";break;
-			default: res = "ref";break;
+			case "resolve": { 
+				String top = stk.get(stk.size()-1).getVal();
+				switch(top){
+				case "EString": resTp = "String";break;
+				case "EInt": resTp= "int";break;
+				case "EBool": resTp= "bool";break;
+				default: resTp = "ref";break;
+				}
+				res = new EMFTVMType(TYPE.REF, resTp);
+				break;
 			}
-			break;
-		}
-		default: res="Unkown"; break;
+			default:
 		}
 		return res;
 	}
 	
-	
-	
-	public static EMFTVMType getReturnASMType(String s, Stack<EMFTVMType> stk,
-			Map<String, String> ins,Map<String, String> outs, 
-			Map<String, String> srcsf, Map<String, String> tarsf){
-		String r = getReturnType(s);	// return type;
-		String id = r.substring(0,1);	// first letter, id the type.
-		
-		switch(id){
-			case "S": return new EMFTVMType(TYPE.STRING);
-			case "I": return new EMFTVMType(TYPE.INT);
-			case "B": return new EMFTVMType(TYPE.BOOL);
-			case "J": {	//TODO
-				String tp = typeInfer(s, stk, ins,outs,srcsf,tarsf);
-				return new EMFTVMType(TYPE.REF, tp);
-			}
-			case "M": 
-			case "N": {
-				String rest = r.substring(1, r.length());
-				return new EMFTVMType(TYPE.REF, rest);
-			}
-			case "Q": {	
-				String tp = typeInfer(s, stk, ins,outs,srcsf,tarsf);
-				return new EMFTVMType(TYPE.SEQ, tp);
-			}
-			default: return new EMFTVMType(TYPE.UNKNOWN);
-		} 
-	}
-	
-	public static String getReturnType(String s) {
-		return s.substring(s.lastIndexOf(":")+1, s.length());
-	}
-	
-	public static int getNbArgs(String s) {
-		int ret = 0;
 
-		s = pattern1.matcher(s).replaceFirst(""); //$NON-NLS-1$
-		while (!s.startsWith(")") && s.length() > 0) { //$NON-NLS-1$
-			ret++;
-			s = removeFirst(s);
-		}
+	
 
-		return ret;
-	}
 
 	public static String removeFirst(String s) {
 		if (s.startsWith("T")) { //$NON-NLS-1$

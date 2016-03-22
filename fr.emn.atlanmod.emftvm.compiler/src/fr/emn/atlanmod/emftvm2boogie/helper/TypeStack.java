@@ -4,17 +4,21 @@ import java.util.Map;
 import java.util.Stack;
 
 import org.eclipse.m2m.atl.emftvm.Instruction;
+import org.eclipse.m2m.atl.emftvm.impl.AndImpl;
 import org.eclipse.m2m.atl.emftvm.impl.BranchInstructionImpl;
 import org.eclipse.m2m.atl.emftvm.impl.CodeBlockInstructionImpl;
 import org.eclipse.m2m.atl.emftvm.impl.FieldInstructionImpl;
 import org.eclipse.m2m.atl.emftvm.impl.FindtypeImpl;
 import org.eclipse.m2m.atl.emftvm.impl.GetImpl;
 import org.eclipse.m2m.atl.emftvm.impl.GetcbImpl;
+import org.eclipse.m2m.atl.emftvm.impl.InvokeImpl;
 import org.eclipse.m2m.atl.emftvm.impl.InvokeInstructionImpl;
 import org.eclipse.m2m.atl.emftvm.impl.LoadImpl;
 import org.eclipse.m2m.atl.emftvm.impl.LocalVariableInstructionImpl;
 import org.eclipse.m2m.atl.emftvm.impl.NewImpl;
 import org.eclipse.m2m.atl.emftvm.impl.PushImpl;
+
+
 
 
 
@@ -157,9 +161,9 @@ public class TypeStack{
 			}
 			case LOAD:
 			{	
-				//TODO localvars
 				LoadImpl tempInstr = (LoadImpl) instr;
-				String type = tempInstr.getLocalVariable().getType();
+				String type = tempInstr.getLocalVariable().getTypeModel()+"$"+tempInstr.getLocalVariable().getType();
+				
 				stk.push(new EMFTVMType(TYPE.REF, type));
 				break;
 			}
@@ -203,7 +207,9 @@ public class TypeStack{
 			switch (instr.getOpcode()) {
 			case AND:
 			{
-				//
+				stk.pop();
+				stk.push(new EMFTVMType(TYPE.BOOL, "???")); 
+				
 				break;
 			}
 			case GETCB:{
@@ -213,17 +219,19 @@ public class TypeStack{
 			}
 			case IMPLIES:
 			{
-				//
+				stk.pop();
+				stk.push(new EMFTVMType(TYPE.BOOL, "???")); 
 				break;
 			}
 			case INVOKE_CB:
 			{
-				//
+				//TODO
 				break;
 			}
 			case OR:
 			{
-				//
+				stk.pop();
+				stk.push(new EMFTVMType(TYPE.BOOL, "???")); 
 				break;
 			}
 			default:
@@ -233,17 +241,40 @@ public class TypeStack{
 			switch (instr.getOpcode()) {
 			case INVOKE_CB_S:
 			{
-				//
+				//TODO
 				break;
 			}
 			case INVOKE:
 			{
-//				result = ASMReaderHelper.genCallwithReturns(operand, ln, typeStack);
+				InvokeImpl invoke = (InvokeImpl) instr;
+				String operand = invoke.getOpname();
+				int n = invoke.getArgcount();
+				
+				EMFTVMType rtnTp = EMFTVMSignatureHelper.getReturnEMFTVMType(operand, stk, ins,outs,srcsf,tarsf);
+				int i = 0;
+				while(i<n){
+					stk.pop();	// pop args.
+					i++;
+				}
+				stk.pop(); // pop ctx
+				stk.push(rtnTp);
+				
 				break;
 			}
 			case INVOKE_STATIC:
 			{
-				//
+				InvokeImpl invoke = (InvokeImpl) instr;
+				String operand = invoke.getOpname();
+				int n = invoke.getArgcount();
+				
+				EMFTVMType rtnTp = EMFTVMSignatureHelper.getReturnEMFTVMType(operand, stk, ins,outs,srcsf,tarsf);
+				int i = 0;
+				while(i<n){
+					stk.pop();	// pop args.
+					i++;
+				}
+				stk.pop(); // pop ctx
+				stk.push(rtnTp);
 				break;
 			}
 			default:
@@ -253,12 +284,15 @@ public class TypeStack{
 			switch (instr.getOpcode()) {
 			case ALLINST:
 			{
-				//
+				String cl = stk.pop().getVal();
+				stk.push(new EMFTVMType(TYPE.SEQ, cl)); 
 				break;
 			}
 			case ALLINST_IN:
 			{
-				//
+				String hp = stk.pop().getVal();
+				String cl = stk.pop().getVal();
+				stk.push(new EMFTVMType(TYPE.SEQ, cl));
 				break;
 			}
 			case DELETE :
@@ -308,7 +342,7 @@ public class TypeStack{
 			}
 			case IFTE:
 			{
-				//
+				stk.pop();
 				break;
 			}
 			case ISNULL:

@@ -30,7 +30,7 @@ import org.eclipse.m2m.atl.engine.vm.ASMInstructionWithOperand;
 import org.eclipse.m2m.atl.engine.vm.ASMOperation;
 import org.eclipse.m2m.atl.engine.vm.ASMOperation.LocalVariableEntry;
 
-import fr.emn.atlanmod.emftvm2boogie.helper.ASMReaderHelper;
+import fr.emn.atlanmod.emftvm2boogie.helper.EMFTVMReaderHelper;
 import fr.emn.atlanmod.emftvm2boogie.helper.ATLModelInjector;
 import fr.emn.atlanmod.emftvm2boogie.helper.CodeBlockHelper;
 import fr.emn.atlanmod.emftvm2boogie.helper.EcoreReaderHelper;
@@ -187,12 +187,14 @@ public class Driver {
 	static String printInstr(Instruction instr, Map<String, String> localVars, int ln, CodeBlock cb, List<Instruction> instrs)
 			throws Exception {
 		String result = "";
+		result = String.format("//%s: %s \n", ln, instr.getOpcode());
+		
 		
 		if (instr instanceof FieldInstructionImpl) {
 			FieldInstructionImpl tInstr = (FieldInstructionImpl) instr;
 			
 			String operand = tInstr.getFieldname();
-			result = String.format("//%s: %s \n", ln, tInstr.getOpcode());
+			
 			switch (tInstr.getOpcode()) {
 			case ADD:
 			{
@@ -238,18 +240,18 @@ public class Driver {
 			case STORE:
 			{			
 				String var_store = tInstr.getLocalVariable().getName();
-				result = String.format("call stk, %s := OpCode#STORE(stk);", var_store);
+				result += String.format("call stk, %s := OpCode#STORE(stk);", var_store);
 				break;
 			}
 			case LOAD:
 			{	
 				String var_load =tInstr.getLocalVariable().getName();
-				result = String.format("call stk := OpCode#LOAD(stk, %s);", var_load);
+				result += String.format("call stk := OpCode#LOAD(stk, %s);", var_load);
 				break;
 			}
 			default:
 			{	
-				result = String.format(instr.getOpcode() + " NOT SUPPORT");
+				result += String.format(instr.getOpcode() + " NOT SUPPORT");
 				break;
 			}
 			}
@@ -322,7 +324,7 @@ public class Driver {
 			}
 			case GETCB:{
 				
-				result += String.format("label_START_%s:\n",  tcb.toString());
+				result += String.format("label_START_%s:\n",  tcb.toString().replace(" ", "_"));
 				printInstrs(tcb, localVars);
 				break;
 			}
@@ -359,13 +361,11 @@ public class Driver {
 				break;
 			}
 		}else if(instr instanceof InvokeInstructionImpl){
-			//InvokeInstructionImpl tInstr = ((InvokeInstructionImpl) instr);
+			
 			
 			switch (instr.getOpcode()) {
 			case INVOKE_CB_S:
 			{
-				
-				//InvokeCbSImpl invoke_cb_s = ((InvokeCbSImpl) tInstr);
 				result += String.format("assert Seq#Length(stk) >= n;\n");
 				result += String.format("stk#%d := stk;\n", ln);
 				result += String.format("stk := Seq#Drop(stk, Seq#Length(stk)-n);\n");
@@ -376,12 +376,16 @@ public class Driver {
 			}
 			case INVOKE:
 			{
-//				result = ASMReaderHelper.genCallwithReturns(operand, ln, typeStack);
+				InvokeImpl tInstr = ((InvokeImpl) instr);
+				String operand = tInstr.getOpname();
+				result += EMFTVMReaderHelper.genCall(operand, ln, typeStack, false);
 				break;
 			}
 			case INVOKE_STATIC:
 			{
-//				result = ASMReaderHelper.genCallwithReturns(operand, ln, typeStack);
+				InvokeImpl tInstr = ((InvokeImpl) instr);
+				String operand = tInstr.getOpname();
+				result += EMFTVMReaderHelper.genCall(operand, ln, typeStack, true);
 				break;
 			}
 			default:
@@ -392,8 +396,8 @@ public class Driver {
 			switch (instr.getOpcode()) {
 			case ALLINST:
 			{
-				//TODO, determine heap
-				result = String.format("call stk := OpCode#ALLINST(stk, ???);");
+				String hp = typeStack.get(typeStack.size()-1).getVal();
+				result = String.format("call stk := OpCode#ALLINST(stk, %s);", hp);
 				break;
 			}
 			case ALLINST_IN:
@@ -508,8 +512,7 @@ public class Driver {
 			}
 			case RETURN:
 			{
-				//ReturnImpl tInstr = (ReturnImpl) instr;
-				result = String.format("goto %s;", "label_END_"+cb.toString()); 
+				result = String.format("goto %s;", "label_END_"+cb.toString().replace(" ", "_")); 
 				break;
 			}
 			case SWAP:
@@ -737,7 +740,7 @@ public class Driver {
 
 	}
 
-	//TODO Finish
+
 	static String printInsertInstr(String operand) throws Exception {
 
 		String objType = typeStack.get(typeStack.size() - 3).getVal();
@@ -808,14 +811,13 @@ public class Driver {
 		srcMM = EcoreReaderHelper.readEcore(src);
 		tarMM = EcoreReaderHelper.readEcore(tar);
 
-		attrInfo.putAll(EcoreReaderHelper.readEinfo(srcMM));
-		attrInfo.putAll(EcoreReaderHelper.readEinfo(tarMM));
-
 		parentInfo.putAll(EcoreReaderHelper.readParantInfo(srcMM));
 		parentInfo.putAll(EcoreReaderHelper.readParantInfo(tarMM));
 
 		srcsfInfo.putAll(EcoreReaderHelper.readEinfoAll(srcMM));
 		tarsfInfo.putAll(EcoreReaderHelper.readEinfoAll(tarMM));
+		
+
 		
 		for(Rule rl : env.getRules()){
 			CodeBlock cb_match = rl.getMatcher();
@@ -824,7 +826,7 @@ public class Driver {
 				option = "match";
 				//String outPth = String.format("%s%s_match.bpl", out, rule);
 				//System.setOut(new PrintStream(new File(outPth)));
-				//bootstrap_miningATLSource(rule);
+				bootstrap_miningATLSource(rule);
 				printSignature(rule, option);
 				printCodeBlock(cb_match, option);
 			}
@@ -835,7 +837,7 @@ public class Driver {
 				option = "apply";
 				//String outPth = String.format("%s%s_match.bpl", out, rule);
 				//System.setOut(new PrintStream(new File(outPth)));
-				//bootstrap_miningATLSource(rule);
+				bootstrap_miningATLSource(rule);
 				printSignature(rule, option);
 				printCodeBlock(cb_apply, option);
 			}
@@ -860,7 +862,7 @@ public class Driver {
 		System.out.println("{\n");
 		Map<String, String> localVars = printLocalVars(cb, option);
 		printInstrs(cb, localVars);
-		System.out.printf("label_END_%s:\n", cb.toString());	// hack, should be in bootstrap_getLabels
+		System.out.printf("label_END_%s:\n", cb.toString().replace(" ", "_"));	// hack, should be in bootstrap_getLabels
 		System.out.println("\n}");
 
 	}
@@ -922,6 +924,37 @@ public class Driver {
 		}
 	}
 	
+	static void bootstrap_miningATLSource(String rule) throws Exception {
+
+		inIds.clear();
+		Rule r = getRule(env, rule);
+		if (r == null) {
+			throw new Exception("No rule found with given name: " + rule);
+		}
+
+		for (InputRuleElement i : r.getInputElements()) {
+			ins.put(i.getName(), String.format("%s$%s", i.getTypeModel(), i.getType()));
+			inIds.add(i.getName());
+		}
+
+		for (OutputRuleElement o : r.getOutputElements()) {
+			outs.put(o.getName(), String.format("%s$%s", o.getTypeModel(), o.getType()));
+			outTypes.add(String.format("%s$%s", o.getTypeModel(), o.getType()));
+		}
+
+		System.out.println();
+
+	}
+	
+	static Rule getRule(ExecEnv env, String rule) {
+		for (Rule r : env.getRules()) {
+			if (r.getName().equals(rule)) {
+				return r;
+			}
+		}
+		return null;
+	}
+
 	public static void main(String[] args) throws Exception {
 
 		genBoogie(args[0], args[1], args[2], args[3], args[4], args[5], args[6]);
