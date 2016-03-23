@@ -20,8 +20,7 @@ import org.eclipse.m2m.atl.emftvm.LocalVariable;
 import org.eclipse.m2m.atl.emftvm.Opcode;
 import org.eclipse.m2m.atl.emftvm.OutputRuleElement;
 import org.eclipse.m2m.atl.emftvm.Rule;
-
-
+import org.eclipse.m2m.atl.emftvm.RuleMode;
 import org.eclipse.m2m.atl.emftvm.impl.*;
 
 
@@ -62,7 +61,8 @@ public class Driver {
 	static Map<Integer, List<String>> invPool = new HashMap<Integer, List<String>>();
 	static int loopLevel = 0;
 
-
+	static String srcHeap = "$srcHeap";
+	static String tarHeap = "$tarHeap";
 	
 
 	static Set<Integer> bootstrap_getLabels(CodeBlock cb) {
@@ -410,11 +410,11 @@ public class Driver {
 				String o = "Seq#Index(stk, Seq#Length(stk)-1)";
 				String tHeap = String.format("heap#%d", ln);
 				result += String.format("assert Seq#Length(stk) >= n;\n");
-				result += String.format("heap#%d := $tarHeap;\n", ln);
-				result += String.format("assert %s!=null && read($tarHeap, %s, alloc);\n", o, o);
-				result += String.format("havoc $tarHeap;");
+				result += String.format("heap#%d := %s;\n", tarHeap, ln);
+				result += String.format("assert %s!=null && read(%s, %s, alloc);\n", o, tarHeap, o);
+				result += String.format("havoc %s;", tarHeap);
 				
-				result += String.format("assume (forall<alpha> r: ref, f: Field alpha :: r != null and read(%s, r, alloc) && r!=%s ==> read($tarHeap, r, f) = read(%s , r, f));\n", tHeap, o, tHeap);
+				result += String.format("assume (forall<alpha> r: ref, f: Field alpha :: r != null and read(%s, r, alloc) && r!=%s ==> read(%s, r, f) = read(%s , r, f));\n", tHeap, o, tarHeap, tHeap);
 				result += String.format("assume !read(heap, %s, alloc);\n", o);
 				
 				result += String.format("stk := Seq#Take(stk, Seq#Length(stk)-1);\n");
@@ -555,7 +555,7 @@ public class Driver {
 			if (mmName.equals("#native")) {
 				operatedHeap = "$linkHeap";
 			} else {
-				operatedHeap = "$tarHeap";
+				operatedHeap = tarHeap;
 			}
 
 		}
@@ -571,7 +571,7 @@ public class Driver {
 
 		// establish injectivity between created target element and its
 		// corresponding source element(s).
-		if (operatedHeap.equals("$tarHeap")) {
+		if (operatedHeap.equals(tarHeap)) {
 			String lhs = "";
 			lhs = String.format("Seq#Singleton(%s)", inIds.get(0));
 			for (String in : inIds.subList(1, inIds.size())) {
@@ -597,7 +597,7 @@ public class Driver {
 			if (mmName.equals("#native")) {
 				operatedHeap = "$linkHeap";
 			} else {
-				operatedHeap = "$tarHeap";
+				operatedHeap = tarHeap;
 			}
 
 		}
@@ -613,7 +613,7 @@ public class Driver {
 
 		// establish injectivity between created target element and its
 		// corresponding source element(s).
-		if (operatedHeap.equals("$tarHeap")) {
+		if (operatedHeap.equals(tarHeap)) {
 			String lhs = "";
 			lhs = String.format("Seq#Singleton(%s)", inIds.get(0));
 			for (String in : inIds.subList(1, inIds.size())) {
@@ -636,7 +636,7 @@ public class Driver {
 		if (ins.containsValue(objType)) {
 			operatedHeap = "$srcHeap";
 		} else if (outs.containsValue(objType)) {
-			operatedHeap = "$tarHeap";
+			operatedHeap = tarHeap;
 		} else {
 			operatedHeap = "$linkHeap";
 		}
@@ -671,30 +671,30 @@ public class Driver {
 
 		String result = "assert Seq#Length(stk) > 1;\n";
 		result += String.format("assert %s != null;\n", o);	
-		result += String.format("assert read($tarHeap, %s, alloc);\n", o);
+		result += String.format("assert read(%s, %s, alloc);\n", tarHeap, o);
 
 		if (tarsfInfo.containsKey(fieldName) && tarsfInfo.get(fieldName).startsWith("Seq;")) { // isCollection
 			result += "havoc $newCol;\n";
 			result += "assume dtype($newCol) == class._System.array;\n";
-			result += "assume $newCol != null && read($tarHeap, $newCol, alloc);\n";
+			result += String.format("assume $newCol != null && read(%s, $newCol, alloc);\n", tarHeap);
 			result += String.format(
-					"assume Seq#FromArray($tarHeap,$newCol) == Seq#Append(Seq#FromArray($tarHeap, read($tarHeap, $Unbox(Seq#Index(stk, Seq#Length(stk)-2)), %s)), Seq#FromArray($tarHeap, $Unbox(Seq#Index(stk, Seq#Length(stk)-1))));\n",
-					fieldName);
-			result += String.format("$tarHeap := update($tarHeap, %s, %s, $newCol);\n", o, fieldName);
+					"assume Seq#FromArray(%s,$newCol) == Seq#Append(Seq#FromArray(%s, read(%s, $Unbox(Seq#Index(stk, Seq#Length(stk)-2)), %s)), Seq#FromArray(%s, $Unbox(Seq#Index(stk, Seq#Length(stk)-1))));\n",
+					tarHeap, tarHeap, tarHeap, fieldName, tarHeap);
+			result += String.format("%s := update(%s, %s, %s, $newCol);\n", tarHeap, tarHeap, o, fieldName);
 
 		} else { // is normal field
 			result += String.format("assert !isSet(acc, %s, %s)\n;", o, fieldName);
-			result += String.format("$tarHeap := update($tarHeap, %s, %s, %s);\n", o, fieldName, v);
+			result += String.format("%s := update(%s, %s, %s, %s);\n", tarHeap, tarHeap, o, fieldName, v);
 			result += String.format("acc := set(acc, %s, %s, %s);\n", o, fieldName, "true");
 		}
 
-		result += "assume $IsGoodHeap($tarHeap);\n";
+		result += String.format("assume $IsGoodHeap(%s);\n", tarHeap);
 		result += "stk := Seq#Take(stk, Seq#Length(stk)-2);\n";
 		return result;
 
 	}
 
-	//TODO Finish
+
 	static String printRemoveInstr(String operand) throws Exception {
 
 		String objType = typeStack.get(typeStack.size() - 2).getVal();
@@ -707,32 +707,32 @@ public class Driver {
 
 		String result = "assert Seq#Length(stk) > 1;\n";
 		result += String.format("assert %s != null;\n", o);	
-		result += String.format("assert read($tarHeap, %s, alloc);\n", o);
+		result += String.format("assert read(%s, %s, alloc);\n", tarHeap, o);
 
 		if (tarsfInfo.containsKey(fieldName) && tarsfInfo.get(fieldName).startsWith("Seq;")) { // isCollection
 			result += "havoc $newCol;\n";
 			result += "assume dtype($newCol) == class._System.array;\n";
-			result += "assume $newCol != null && read($tarHeap, $newCol, alloc);\n";
+			result += String.format("assume $newCol != null && read(%s, $newCol, alloc);\n", tarHeap);
 			result += String.format(
-					"assume (forall o: BoxType :: Seq#Contains(Seq#FromArray($tarHeap,$newCol), o) <==> "
-					+ "Seq#Contains(Seq#FromArray($tarHeap, read($tarHeap, %s, %s)), o) "
-					+ "&& !Seq#Contains(Seq#FromArray($tarHeap,%s), o));\n",
-					o, fieldName,v);
+					"assume (forall o: BoxType :: Seq#Contains(Seq#FromArray(%s,$newCol), o) <==> "
+					+ "Seq#Contains(Seq#FromArray(%s, read(%s, %s, %s)), o) "
+					+ "&& !Seq#Contains(Seq#FromArray(%s,%s), o));\n",
+					tarHeap, tarHeap, tarHeap, o, fieldName, tarHeap, v);
 			result += String.format(
-					"$tarHeap := update($tarHeap, %s, %s, $newCol);\n",
-					o,fieldName);
+					"%s := update(%s, %s, %s, $newCol);\n",
+					tarHeap,tarHeap,o,fieldName);
 
 		} else { // is normal field
-			result += String.format("if(read($tarHeap, %s, %s) == %s){\n", o, fieldName, v);
+			result += String.format("if(read(%s, %s, %s) == %s){\n", tarHeap, o, fieldName, v);
 			
 			result += String.format("assert isSet(acc, %s, %s);\n", o, fieldName);
-			result += String.format("$tarHeap := update($tarHeap, %s, %s, %s);\n", o, fieldName, v);
+			result += String.format("%s := update(%s, %s, %s, %s);\n", tarHeap,tarHeap,o, fieldName, v);
 			result += String.format("acc := set(acc, %s, %s, %s);\n", o, fieldName, "false");
 			result += "}\n";
 			
 		}
 
-		result += "assume $IsGoodHeap($tarHeap);\n";
+		result += String.format("assume $IsGoodHeap(%s);\n", tarHeap);
 		result += "stk := Seq#Take(stk, Seq#Length(stk)-2);\n";
 		return result;
 		
@@ -755,25 +755,25 @@ public class Driver {
 
 		String result = "assert Seq#Length(stk) > 2;\n";
 		result += String.format("assert %s != null;\n", o);	
-		result += String.format("assert read($tarHeap, %s, alloc);\n", o);
+		result += String.format("assert read(%s, %s, alloc);\n", tarHeap,o);
 		
 		if (tarsfInfo.containsKey(fieldName) && tarsfInfo.get(fieldName).startsWith("Seq;")) { // isCollection
 			
 			result += "havoc $newCol;\n";
 			result += "assume dtype($newCol) == class._System.array;\n";
-			result += "assume $newCol != null && read($tarHeap, $newCol, alloc);\n";
-			result += String.format("assert -1 <= %s && %s < Seq#Length(Seq#FromArray($tarHeap, read($tarHeap, %s, %s)));", i, i, o, fieldName);
-			result += String.format("assume Seq#FromArray($tarHeap,$newCol) == Seq#Append(Seq#Append(Seq#Take(Seq#FromArray($tarHeap, read($tarHeap, %s, %s)), %s), Seq#FromArray($tarHeap,%s)), Seq#Drop(Seq#FromArray($tarHeap,read($tarHeap, %s, %s)), %s));\n", o, fieldName, i, v, o, fieldName, i);
-			result += String.format("$tarHeap := update($tarHeap, %s, %s, $newCol);\n", o,fieldName);
+			result += String.format("assume $newCol != null && read(%s, $newCol, alloc);\n", tarHeap);
+			result += String.format("assert -1 <= %s && %s < Seq#Length(Seq#FromArray(%s, read(%s, %s, %s)));", i, i, tarHeap,tarHeap,o, fieldName);
+			result += String.format("assume Seq#FromArray(%s,$newCol) == Seq#Append(Seq#Append(Seq#Take(Seq#FromArray(%s, read(%s, %s, %s)), %s), Seq#FromArray(%s,%s)), Seq#Drop(Seq#FromArray(%s,read(%s, %s, %s)), %s));\n", tarHeap,tarHeap,tarHeap,o, fieldName, i, tarHeap,v, tarHeap,tarHeap,o, fieldName, i);
+			result += String.format("%s := update(%s, %s, %s, $newCol);\n", tarHeap,tarHeap,o,fieldName);
 
 		} else { // is normal field
 			result += String.format("assert !isSet(acc, %s, %s)\n;", o, fieldName);
-			result += String.format("$tarHeap := update($tarHeap, %s, %s, %s);\n", o, fieldName, v);
+			result += String.format("%s := update(%s, %s, %s, %s);\n", tarHeap,tarHeap,o, fieldName, v);
 			result += String.format("acc := set(acc, %s, %s, %s);\n", o, fieldName, "true");
 			
 		}
 
-		result += "assume $IsGoodHeap($tarHeap);\n";
+		result += String.format("assume $IsGoodHeap(%s);\n", tarHeap);
 		result += "stk := Seq#Take(stk, Seq#Length(stk)-3);\n";
 		return result;
 
@@ -789,17 +789,17 @@ public class Driver {
 
 		String result = "assert Seq#Length(stk) >= 2;\n";
 		result += "assert $Unbox(Seq#Index(stk, Seq#Length(stk)-2)) != null;\n";
-		result += "assert read($tarHeap, $Unbox(Seq#Index(stk, Seq#Length(stk)-2)), alloc);\n";
+		result += String.format("assert read(%s, $Unbox(Seq#Index(stk, Seq#Length(stk)-2)), alloc);\n", tarHeap);
 
 		if(isStatic){
-			result += String.format("$tarHeap := update($tarHeap, " + "toRef($Unbox(Seq#Index(stk, Seq#Length(stk)-2))),"
-					+ "%s," + "$Unbox(Seq#Index(stk, Seq#Length(stk)-1)));\n", fieldName);
+			result += String.format("%s := update(%s, " + "toRef($Unbox(Seq#Index(stk, Seq#Length(stk)-2))),"
+					+ "%s," + "$Unbox(Seq#Index(stk, Seq#Length(stk)-1)));\n", tarHeap,tarHeap,fieldName);
 		}else{
-			result += String.format("$tarHeap := update($tarHeap, " + "$Unbox(Seq#Index(stk, Seq#Length(stk)-2)),"
-					+ "%s," + "$Unbox(Seq#Index(stk, Seq#Length(stk)-1)));\n", fieldName);
+			result += String.format("%s := update(%s, " + "$Unbox(Seq#Index(stk, Seq#Length(stk)-2)),"
+					+ "%s," + "$Unbox(Seq#Index(stk, Seq#Length(stk)-1)));\n", tarHeap,tarHeap,fieldName);
 		}
 
-		result += "assume $IsGoodHeap($tarHeap);\n";
+		result += String.format("assume $IsGoodHeap(%s);\n", tarHeap);
 		result += "stk := Seq#Take(stk, Seq#Length(stk)-2);\n";
 		return result;
 
@@ -822,6 +822,13 @@ public class Driver {
 		for(Rule rl : env.getRules()){
 			CodeBlock cb_match = rl.getMatcher();
 			if(cb_match != null){
+				
+				if(rl.getMode() == RuleMode.AUTOMATIC_RECURSIVE){
+					tarHeap = "$srcHeap";
+				}else{
+					tarHeap = "$tarHeap";
+				}
+				
 				rule = rl.getName();
 				option = "match";
 				//String outPth = String.format("%s%s_match.bpl", out, rule);
