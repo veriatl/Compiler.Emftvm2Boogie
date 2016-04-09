@@ -324,7 +324,7 @@ public class Driver {
 			}
 			case GETCB:{
 				
-				result += String.format("label_START_%s:\n",  tcb.toString().replace(" ", "_"));
+				result += String.format("label_START_%s:\n",  tcb.toString().replace(" ", "_").replace("@", "_"));
 				printInstrs(tcb, localVars);
 				break;
 			}
@@ -512,7 +512,7 @@ public class Driver {
 			}
 			case RETURN:
 			{
-				result = String.format("goto %s;", "label_END_"+cb.toString().replace(" ", "_")); 
+				result = String.format("goto %s;", "label_END_"+cb.toString().replace(" ", "_").replace("@", "_")); 
 				break;
 			}
 			case SWAP:
@@ -831,10 +831,10 @@ public class Driver {
 				
 				rule = rl.getName();
 				option = "match";
-				//String outPth = String.format("%s%s_match.bpl", out, rule);
-				//System.setOut(new PrintStream(new File(outPth)));
+				String outPth = String.format("%s%s_match.bpl", out, rule);
+				System.setOut(new PrintStream(new File(outPth)));
 				bootstrap_miningATLSource(rule);
-				printSignature(rule, option);
+				printSignature(cb_match, rule, option);
 				printCodeBlock(cb_match, option);
 			}
 			
@@ -842,10 +842,10 @@ public class Driver {
 			if(cb_apply != null){
 				rule = rl.getName();
 				option = "apply";
-				//String outPth = String.format("%s%s_match.bpl", out, rule);
-				//System.setOut(new PrintStream(new File(outPth)));
+				String outPth = String.format("%s%s_apply.bpl", out, rule);
+				System.setOut(new PrintStream(new File(outPth)));
 				bootstrap_miningATLSource(rule);
-				printSignature(rule, option);
+				printSignature(cb_apply, rule, option);
 				printCodeBlock(cb_apply, option);
 			}
 			
@@ -855,11 +855,24 @@ public class Driver {
 	}
 
 	
-	static void printSignature(String rule, String option) {
+	static void printSignature(CodeBlock cb, String rule, String option) {
+		String in = "";
+		
+		int i = 0;
+		for(LocalVariable r : cb.getLocalVariables()){
+			in += r.getName()+ ": ref";
+			
+			if(i!=cb.getLocalVariables().size()-1){
+				in+=",";
+			}
+			i++;
+		}
+			
+		
 		if (option.equals("apply")) {
-			System.out.printf("implementation %s_apply (in: ref) returns ()", rule);
+			System.out.printf("implementation %s_apply (%s) returns ()", rule, in);
 		} else {
-			System.out.printf("implementation %s_matchAll() returns ()", rule);
+			System.out.printf("implementation %s_match(%s) returns (r: bool)", rule, in);
 		}
 
 		System.out.println();
@@ -869,7 +882,10 @@ public class Driver {
 		System.out.println("{\n");
 		Map<String, String> localVars = printLocalVars(cb, option);
 		printInstrs(cb, localVars);
-		System.out.printf("label_END_%s:\n", cb.toString().replace(" ", "_"));	// hack, should be in bootstrap_getLabels
+		System.out.printf("label_END_%s:\n", cb.toString().replace(" ", "_").replace("@", "_"));	// hack, should be in bootstrap_getLabels
+		if(option.equals("match")){
+			System.out.println("r:=$Unbox(top(stk));");
+		}
 		System.out.println("\n}");
 
 	}
@@ -880,17 +896,17 @@ public class Driver {
 		System.out.printf("var %s: Seq BoxType;\n", "stk");
 		System.out.printf("var %s: ref;\n", "$newCol");
 		// for apply operation, there is a implicit copy: link := in;
-		if (option.equals("apply")) {
-			System.out.println("__trace__ := in;");
-		}
+
 		
 		for (LocalVariable v : cb.getLocalVariables()) {
-			System.out.printf("var %s: ref;\t//slot: %s\n", v.getName(), v.getSlot());
+			
 			localVars.put(Integer.toString(v.getSlot()), v.getName());
 		}
 
 		//TODO bootstrap the localvars of other code block, if, iter etc.
 		bootstrap_addNewVars(cb);
+		
+
 		
 		// for all operation, initialize the local operand stack;
 		System.out.printf("%s := %s();\n", "stk", "OpCode#Aux#InitStk");
