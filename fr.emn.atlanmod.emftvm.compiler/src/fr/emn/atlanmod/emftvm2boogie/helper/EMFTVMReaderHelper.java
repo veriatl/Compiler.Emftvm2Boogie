@@ -18,7 +18,7 @@ public class EMFTVMReaderHelper {
 					case "EBoolean": inferedType= "bool";break;
 					default: inferedType = "ref";break;
 					}
-					res=String.format("call stk := ASM#Resolve(stk, $srcHeap, $Unbox(Seq#Index(stk, Seq#Length(stk)-1)): %s);", inferedType);break;
+					res=String.format("call stk := EMFTVM#Resolve(stk, $srcHeap, $Unbox(Seq#Index(stk, Seq#Length(stk)-1)): %s);", inferedType);break;
 				}
 				case "=":
 					res = String.format("call stk := OCLAny#Equal(stk,$Unbox(Seq#Index(stk, Seq#Length(stk)-2)): %s,$Unbox(Seq#Index(stk, Seq#Length(stk)-1)): %s);", "ref", "ref");
