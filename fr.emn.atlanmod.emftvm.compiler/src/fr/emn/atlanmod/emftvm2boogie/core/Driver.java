@@ -1,6 +1,7 @@
 package fr.emn.atlanmod.emftvm2boogie.core;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -63,7 +64,7 @@ public class Driver {
 
 	static String srcHeap = "$srcHeap";
 	static String tarHeap = "$tarHeap";
-	
+	static String acc = "$acc";
 
 	static Set<Integer> bootstrap_getLabels(CodeBlock cb) {
 		int ln = 0;
@@ -264,8 +265,8 @@ public class Driver {
 				String counter1 = enditeratorMap.get(ln);
 				int conterLN = Integer.parseInt(counter1.substring(counter1.indexOf("#") + 1));
 				result += String.format("%s := %s+1;\n", counter1, counter1);
-				result += String.format("assert 0<= decreases#%d || Seq#Length(obj#%d) - %s == decreases#%d;\n", Integer.valueOf(conterLN), Integer.valueOf(conterLN - 1), counter1, Integer.valueOf(conterLN));
-		        result += String.format("assert Seq#Length(obj#%d) - %s < decreases#%d;\n", Integer.valueOf(conterLN - 1), counter1, Integer.valueOf(conterLN) );
+				//result += String.format("assert 0<= decreases#%d || Seq#Length(obj#%d) - %s == decreases#%d;\n", Integer.valueOf(conterLN), Integer.valueOf(conterLN - 1), counter1, Integer.valueOf(conterLN));
+		        //result += String.format("assert Seq#Length(obj#%d) - %s < decreases#%d;\n", Integer.valueOf(conterLN - 1), counter1, Integer.valueOf(conterLN) );
 				result += String.format("}");
 				loopLevel--;
 				break;
@@ -303,6 +304,7 @@ public class Driver {
 //					result += inv;
 //				}
 //				result = result + String.format("{ decreases#%d := Seq#Length(obj#%d) - %s;\n", Integer.valueOf(ln), Integer.valueOf(ln - 1), counter );
+				result += String.format("{");
 				result += String.format("stk := Seq#Build(stk, $Box(Seq#Index(obj#%d, %s)));", ln - 1, counter);
 				loopLevel++;
 				break;
@@ -407,15 +409,18 @@ public class Driver {
 			}
 			case DELETE :
 			{
-				String o = "Seq#Index(stk, Seq#Length(stk)-1)";
+				String o = "$Unbox(Seq#Index(stk, Seq#Length(stk)-1))";
 				String tHeap = String.format("heap#%d", ln);
-				result += String.format("assert Seq#Length(stk) >= n;\n");
+				result += String.format("assert Seq#Length(stk) > 0;\n");
 				result += String.format("heap#%d := %s;\n", ln, tarHeap);
 				result += String.format("assert %s!=null && read(%s, %s, alloc);\n", o, tarHeap, o);
-				result += String.format("havoc %s;", tarHeap);
+				result += String.format("havoc %s;\n", tarHeap);
 				
-				result += String.format("assume (forall<alpha> r: ref, f: Field alpha :: r != null and read(%s, r, alloc) && r!=%s ==> read(%s, r, f) = read(%s , r, f));\n", tHeap, o, tarHeap, tHeap);
-				result += String.format("assume !read(heap, %s, alloc);\n", o);
+				result += String.format("assume (forall<alpha> r: ref, f: Field alpha :: r != null && read(%s, r, alloc) && r!=%s ==> read(%s, r, f) == read(%s , r, f));\n", tHeap, o, tarHeap, tHeap);
+				result += String.format("assume (forall<alpha> r: ref, f: Field alpha :: r != null && !read(%s, r, alloc) ==> read(%s, r, f) == read(%s , r, f));\n", tHeap, tarHeap, tHeap);
+				result += String.format("assume (forall<alpha> f: Field alpha :: f!=alloc ==> read(%s, %s, f) == read(%s , %s, f));\n", tHeap, o, tarHeap, o);
+				
+				result += String.format("assume !read(%s, %s, alloc);\n", tarHeap, o);
 				
 				result += String.format("stk := Seq#Take(stk, Seq#Length(stk)-1);\n");
 				break;
@@ -688,9 +693,9 @@ public class Driver {
 			result += String.format("%s := update(%s, %s, %s, $newCol);\n", tarHeap, tarHeap, o, fieldName);
 
 		} else { // is normal field
-			result += String.format("assert !isSet(acc, %s, %s)\n;", o, fieldName);
+			result += String.format("assert !isset(%s, %s, %s);\n", acc, o, fieldName);
 			result += String.format("%s := update(%s, %s, %s, %s);\n", tarHeap, tarHeap, o, fieldName, v);
-			result += String.format("acc := set(acc, %s, %s, %s);\n", o, fieldName, "true");
+			result += String.format("%s := set(%s, %s, %s, %s);\n", acc, acc, o, fieldName, "true");
 		}
 
 		result += String.format("assume $IsGoodHeap(%s);\n", tarHeap);
@@ -729,10 +734,23 @@ public class Driver {
 
 		} else { // is normal field
 			result += String.format("if(read(%s, %s, %s) == %s){\n", tarHeap, o, fieldName, v);
+			result += String.format("assert isset(%s, %s, %s);\n", acc, o, fieldName);
 			
-			result += String.format("assert isSet(acc, %s, %s);\n", o, fieldName);
-			result += String.format("%s := update(%s, %s, %s, %s);\n", tarHeap,tarHeap,o, fieldName, v);
-			result += String.format("acc := set(acc, %s, %s, %s);\n", o, fieldName, "false");
+			String tp= srcsfInfo.get(fieldName);
+			String df = "";
+			
+			if(tp == "EInt"){
+				df = "0";
+			}else if(tp == "EString"){
+				df = "Seq#Empty()";
+			}else if(tp == "EBoolean"){
+				df = "false";
+			}else{
+				df = "null";
+			}
+			
+			result += String.format("%s := update(%s, %s, %s, %s);\n", tarHeap,tarHeap,o, fieldName, df);
+			result += String.format("%s := set(%s, %s, %s, %s);\n", acc, acc, o, fieldName, "false");
 			result += "}\n";
 			
 		}
@@ -772,9 +790,9 @@ public class Driver {
 			result += String.format("%s := update(%s, %s, %s, $newCol);\n", tarHeap,tarHeap,o,fieldName);
 
 		} else { // is normal field
-			result += String.format("assert !isSet(acc, %s, %s)\n;", o, fieldName);
+			result += String.format("assert !isset(%s, %s, %s)\n;", acc, o, fieldName);
 			result += String.format("%s := update(%s, %s, %s, %s);\n", tarHeap,tarHeap,o, fieldName, v);
-			result += String.format("acc := set(acc, %s, %s, %s);\n", o, fieldName, "true");
+			result += String.format("%s := set(%s, %s, %s, %s);\n",acc, acc,  o, fieldName, "true");
 			
 		}
 
@@ -983,8 +1001,129 @@ public class Driver {
 		return null;
 	}
 
-	public static void main(String[] args) throws Exception {
+	
+	static public void genClassifierTable(String[] args) throws FileNotFoundException{
 
+		
+		ExecEnv env = ATLModelInjector.moduleLoader(args[0], args[1], args[2], args[4], args[3], args[5]);
+		String out = args[6];
+		String outPth = String.format(out+"classifierTable.bpl");
+		System.setOut(new PrintStream(new File(outPth)));
+		
+		Set<String> s = new HashSet<String>();
+		
+		for(Rule rl : env.getRules()){
+			CodeBlock cb_match = rl.getMatcher();
+			if(cb_match != null){
+				for(Instruction i :cb_match.getCode()){
+					switch(i.getOpcode()){
+					case FINDTYPE:
+					{
+						FindtypeImpl find = (FindtypeImpl)i;
+						String temp = String.format("axiom classifierTable[_%s, _%s] == %s$%s;", find.getModelname(), find.getTypename(), find.getModelname(), find.getTypename());
+						s.add(temp);
+						break;
+					}
+					default:
+					}
+				}
+
+			}
+			
+			CodeBlock cb_apply = rl.getApplier();
+			if(cb_apply != null){
+				for(Instruction i :cb_apply.getCode()){
+					switch(i.getOpcode()){
+					case FINDTYPE:
+					{
+						FindtypeImpl find = (FindtypeImpl)i;
+						String temp = String.format("axiom classifierTable[%s, %s] == %s$%s;", find.getModelname(), find.getTypename(), find.getModelname(), find.getTypename());
+						s.add(temp);
+						break;
+					}
+					default:
+					}
+				}
+			}
+			
+			
+		}
+		
+
+		
+		for(String e : s){
+			String str = String.format("%s\n", e);
+			System.out.print(str);
+		}
+	}
+	
+	
+
+	
+	static public void genConstant(String[] args) throws FileNotFoundException{
+
+		
+		ExecEnv env = ATLModelInjector.moduleLoader(args[0], args[1], args[2], args[4], args[3], args[5]);
+		String out = args[6];
+		Set<String> s = new HashSet<String>();
+		
+		for(Rule rl : env.getRules()){
+			CodeBlock cb_match = rl.getMatcher();
+			if(cb_match != null){
+				for(Instruction i :cb_match.getCode()){
+					ArrayList<String> rs = digString(i);
+					s.addAll(rs);
+				}
+
+			}
+			
+			CodeBlock cb_apply = rl.getApplier();
+			if(cb_apply != null){
+				for(Instruction i :cb_apply.getCode()){
+					ArrayList<String> rs = digString(i);
+					s.addAll(rs);
+				}
+			}
+			
+			
+		}
+		
+		String outPth = String.format(out+"constants.bpl");
+		System.setOut(new PrintStream(new File(outPth)));
+		
+		for(String e : s){
+			String str = String.format("const unique _%s: String;\n", e);
+			System.out.print(str);
+		}
+	}
+	
+	private static ArrayList<String> digString(Instruction i) {
+		ArrayList<String> rs = new ArrayList<String>();
+		switch(i.getOpcode()){
+			case PUSH:
+			{
+				PushImpl tempInstr = (PushImpl) i;	
+				if(tempInstr.getStringValue()!=null){
+					rs.add(tempInstr.getStringValue());
+				}
+				break;
+			}
+			case FINDTYPE:
+			{
+				FindtypeImpl tempInstr = (FindtypeImpl)i;
+				rs.add(tempInstr.getModelname());
+				rs.add(tempInstr.getTypename());
+				break;
+			}
+			default:
+		}
+		return rs;
+		
+	}
+
+	public static void main(String[] args) throws Exception {
+		genClassifierTable(args);
+		genConstant(args);
 		genBoogie(args[0], args[1], args[2], args[3], args[4], args[5], args[6]);
 
 	}
