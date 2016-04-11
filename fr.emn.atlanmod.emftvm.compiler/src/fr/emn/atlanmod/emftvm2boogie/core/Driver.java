@@ -299,10 +299,10 @@ public class Driver {
 				result += String.format("%s:=0;\n", counter);
 				result += String.format("call stk := OpCode#POP(stk);\n");
 				result += String.format("while(%s<Seq#Length(obj#%d)) \n", counter, ln - 1);
-				for (String inv : invPool.get(loopLevel)) {
-					result += inv;
-				}
-				result = result + String.format("{ decreases#%d := Seq#Length(obj#%d) - %s;\n", Integer.valueOf(ln), Integer.valueOf(ln - 1), counter );
+//				for (String inv : invPool.get(loopLevel)) {
+//					result += inv;
+//				}
+//				result = result + String.format("{ decreases#%d := Seq#Length(obj#%d) - %s;\n", Integer.valueOf(ln), Integer.valueOf(ln - 1), counter );
 				result += String.format("stk := Seq#Build(stk, $Box(Seq#Index(obj#%d, %s)));", ln - 1, counter);
 				loopLevel++;
 				break;
@@ -410,7 +410,7 @@ public class Driver {
 				String o = "Seq#Index(stk, Seq#Length(stk)-1)";
 				String tHeap = String.format("heap#%d", ln);
 				result += String.format("assert Seq#Length(stk) >= n;\n");
-				result += String.format("heap#%d := %s;\n", tarHeap, ln);
+				result += String.format("heap#%d := %s;\n", ln, tarHeap);
 				result += String.format("assert %s!=null && read(%s, %s, alloc);\n", o, tarHeap, o);
 				result += String.format("havoc %s;", tarHeap);
 				
@@ -497,7 +497,12 @@ public class Driver {
 			case PUSH:
 			{
 				PushImpl tempInstr = (PushImpl) instr;	
-				result = String.format("call stk := OpCode#PUSH(stk, %s);", "_" + tempInstr.getValue().toString());
+				if(tempInstr.getValue() instanceof Integer){
+					result = String.format("call stk := OpCode#PUSHI(stk, %s);", tempInstr.getValue().toString());
+				}else{
+					result = String.format("call stk := OpCode#PUSH(stk, %s);", "_" + tempInstr.getValue().toString());
+				}
+				
 				break;
 			}
 			case PUSHT:

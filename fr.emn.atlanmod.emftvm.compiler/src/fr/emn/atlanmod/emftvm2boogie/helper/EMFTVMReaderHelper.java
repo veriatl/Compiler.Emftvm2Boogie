@@ -23,6 +23,9 @@ public class EMFTVMReaderHelper {
 				case "=":
 					res = String.format("call stk := OCLAny#Equal(stk,$Unbox(Seq#Index(stk, Seq#Length(stk)-2)): %s,$Unbox(Seq#Index(stk, Seq#Length(stk)-1)): %s);", "ref", "ref");
 					break;
+				case "=~":
+					res = String.format("call stk := OCLAny#Equal(stk,$Unbox(Seq#Index(stk, Seq#Length(stk)-2)): %s,$Unbox(Seq#Index(stk, Seq#Length(stk)-1)): %s);", "ref", "ref");
+					break;
 				case "and":
 					res = "call stk := OCLAny#And(stk);";break;
 				case "not":
