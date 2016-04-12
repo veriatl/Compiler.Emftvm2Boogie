@@ -1,4 +1,4 @@
-package fr.emn.atlanmod.emftvm2boogie.core;
+package ie.nuim.cs.emftvm2boogie.core;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -30,11 +30,11 @@ import org.eclipse.m2m.atl.engine.vm.ASMInstructionWithOperand;
 import org.eclipse.m2m.atl.engine.vm.ASMOperation;
 import org.eclipse.m2m.atl.engine.vm.ASMOperation.LocalVariableEntry;
 
-import fr.emn.atlanmod.emftvm2boogie.helper.EMFTVMReaderHelper;
-import fr.emn.atlanmod.emftvm2boogie.helper.ATLModelInjector;
-import fr.emn.atlanmod.emftvm2boogie.helper.CodeBlockHelper;
-import fr.emn.atlanmod.emftvm2boogie.helper.EcoreReaderHelper;
-import fr.emn.atlanmod.emftvm2boogie.helper.TypeStack;
+import ie.nuim.cs.emftvm2boogie.helper.ATLModelInjector;
+import ie.nuim.cs.emftvm2boogie.helper.CodeBlockHelper;
+import ie.nuim.cs.emftvm2boogie.helper.EMFTVMReaderHelper;
+import ie.nuim.cs.emftvm2boogie.helper.EcoreReaderHelper;
+import ie.nuim.cs.emftvm2boogie.helper.TypeStack;
 
 
 public class Driver {

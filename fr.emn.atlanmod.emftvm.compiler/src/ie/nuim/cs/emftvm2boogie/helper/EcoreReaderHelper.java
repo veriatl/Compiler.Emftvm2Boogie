@@ -1,4 +1,4 @@
-package fr.emn.atlanmod.emftvm2boogie.helper;
+package ie.nuim.cs.emftvm2boogie.helper;
 
 import java.util.HashMap;
 import java.util.Map;
