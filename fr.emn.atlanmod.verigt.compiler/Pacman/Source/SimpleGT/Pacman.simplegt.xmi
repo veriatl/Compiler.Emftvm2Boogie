@@ -1,0 +1,944 @@
+<?xml version="1.0" encoding="ASCII"?>
+<simplegt:Module xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xmlns:simplegt="http://eclipselabs.org/simplegt/2013/SimpleGT" 
+xmlns:simpleocl="http://eclipselabs.org/simpleocl/2013/SimpleOCL"
+xsi:schemaLocation="
+http://eclipselabs.org/simpleocl/2013/SimpleOCL ../../../src/metamodel/simpleocl.ecore 
+http://eclipselabs.org/simplegt/2013/SimpleGT ../../../src/metamodel/simplegt.ecore" 
+name="simplyDisco">
+  <metamodels name="P" elements="//@elements.0/@input/@elements.0/@type //@elements.0/@input/@elements.1/@type //@elements.0/@input/@elements.2/@type //@elements.0/@input/@elements.3/@type //@elements.0/@input/@elements.4/@type //@elements.0/@input/@elements.5/@type //@elements.0/@nac.0/@elements.0/@type //@elements.0/@nac.0/@elements.1/@type //@elements.0/@output/@elements.0/@type //@elements.0/@output/@elements.1/@type //@elements.0/@output/@elements.2/@type //@elements.0/@output/@elements.3/@type //@elements.0/@output/@elements.4/@type //@elements.1/@input/@elements.0/@type //@elements.1/@input/@elements.1/@type //@elements.1/@input/@elements.2/@type //@elements.1/@input/@elements.3/@type //@elements.1/@input/@elements.4/@type //@elements.1/@input/@elements.5/@type //@elements.1/@nac.0/@elements.0/@type //@elements.1/@nac.0/@elements.1/@type //@elements.1/@output/@elements.0/@type //@elements.1/@output/@elements.1/@type //@elements.1/@output/@elements.2/@type //@elements.1/@output/@elements.3/@type //@elements.1/@output/@elements.4/@type //@elements.2/@input/@elements.0/@type //@elements.2/@input/@elements.1/@type //@elements.2/@input/@elements.2/@type //@elements.2/@input/@elements.3/@type //@elements.2/@input/@elements.4/@type //@elements.2/@input/@elements.5/@type //@elements.2/@nac.0/@elements.0/@type //@elements.2/@nac.0/@elements.1/@type //@elements.2/@output/@elements.0/@type //@elements.2/@output/@elements.1/@type //@elements.2/@output/@elements.2/@type //@elements.2/@output/@elements.3/@type //@elements.2/@output/@elements.4/@type //@elements.3/@input/@elements.0/@type //@elements.3/@input/@elements.1/@type //@elements.3/@input/@elements.2/@type //@elements.3/@input/@elements.3/@type //@elements.3/@input/@elements.4/@type //@elements.3/@input/@elements.5/@type //@elements.3/@nac.0/@elements.0/@type //@elements.3/@nac.0/@elements.1/@type //@elements.3/@output/@elements.0/@type //@elements.3/@output/@elements.1/@type //@elements.3/@output/@elements.2/@type //@elements.3/@output/@elements.3/@type //@elements.3/@output/@elements.4/@type //@elements.4/@input/@elements.0/@type //@elements.4/@input/@elements.1/@type //@elements.4/@input/@elements.2/@type //@elements.4/@input/@elements.3/@type //@elements.4/@input/@elements.4/@type //@elements.4/@output/@elements.0/@type //@elements.4/@output/@elements.1/@type //@elements.4/@output/@elements.2/@type //@elements.4/@output/@elements.3/@type //@elements.5/@input/@elements.0/@type //@elements.5/@input/@elements.1/@type //@elements.5/@input/@elements.2/@type //@elements.5/@input/@elements.3/@type //@elements.5/@input/@elements.4/@type //@elements.5/@input/@elements.5/@type //@elements.5/@output/@elements.0/@type //@elements.5/@output/@elements.1/@type //@elements.5/@output/@elements.2/@type //@elements.5/@output/@elements.3/@type //@elements.5/@output/@elements.4/@type //@elements.6/@input/@elements.0/@type //@elements.6/@input/@elements.1/@type //@elements.6/@input/@elements.2/@type //@elements.6/@input/@elements.3/@type //@elements.6/@input/@elements.4/@type //@elements.6/@input/@elements.5/@type //@elements.6/@output/@elements.0/@type //@elements.6/@output/@elements.1/@type //@elements.6/@output/@elements.2/@type //@elements.6/@output/@elements.3/@type //@elements.6/@output/@elements.4/@type //@elements.7/@input/@elements.0/@type //@elements.7/@input/@elements.1/@type //@elements.7/@input/@elements.2/@type //@elements.7/@input/@elements.3/@type //@elements.7/@input/@elements.4/@type //@elements.7/@input/@elements.5/@type //@elements.7/@output/@elements.0/@type //@elements.7/@output/@elements.1/@type //@elements.7/@output/@elements.2/@type //@elements.7/@output/@elements.3/@type //@elements.7/@output/@elements.4/@type //@elements.8/@input/@elements.0/@type //@elements.8/@input/@elements.1/@type //@elements.8/@input/@elements.2/@type //@elements.8/@input/@elements.3/@type //@elements.8/@input/@elements.4/@type //@elements.8/@input/@elements.5/@type //@elements.8/@output/@elements.0/@type //@elements.8/@output/@elements.1/@type //@elements.8/@output/@elements.2/@type //@elements.8/@output/@elements.3/@type //@elements.8/@output/@elements.4/@type //@elements.9/@input/@elements.0/@type //@elements.9/@input/@elements.1/@type //@elements.9/@input/@elements.2/@type //@elements.9/@input/@elements.3/@type //@elements.9/@input/@elements.4/@type //@elements.9/@output/@elements.0/@type //@elements.9/@output/@elements.1/@type //@elements.9/@output/@elements.2/@type //@elements.9/@output/@elements.3/@type //@elements.10/@input/@elements.0/@type //@elements.10/@input/@elements.1/@type //@elements.10/@input/@elements.2/@type //@elements.10/@input/@elements.3/@type //@elements.10/@input/@elements.4/@type //@elements.10/@output/@elements.0/@type //@elements.10/@output/@elements.1/@type //@elements.10/@output/@elements.2/@type //@elements.10/@output/@elements.3/@type //@elements.11/@input/@elements.0/@type //@elements.11/@input/@elements.1/@type //@elements.11/@input/@elements.2/@type //@elements.11/@input/@elements.3/@type //@elements.11/@output/@elements.0/@type //@elements.11/@output/@elements.1/@type //@elements.11/@output/@elements.2/@type //@elements.12/@input/@elements.0/@type //@elements.12/@input/@elements.1/@type //@elements.12/@input/@elements.2/@type //@elements.12/@output/@elements.0/@type //@elements.12/@output/@elements.1/@type //@elements.12/@output/@elements.2/@type" model="//@models.0" uri="platform:/resource/Pacman/metamodels/Pacman.ecore"/>
+  <elements xsi:type="simplegt:Rule" name="PlayerMoveLeft">
+    <input>
+      <elements varName="s">
+        <type xsi:type="simpleocl:OclModelElement" name="GameState" model="//@metamodels.0"/>
+        <bindings property="STATE">
+          <expr xsi:type="simpleocl:IntegerExp" integerSymbol="3"/>
+        </bindings>
+        <bindings property="record">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.0/@input/@elements.1"/>
+        </bindings>
+      </elements>
+      <elements varName="rec" variableExp="//@elements.0/@input/@elements.0/@bindings.1/@expr //@elements.0/@input/@elements.5/@bindings.1/@expr/@source">
+        <type xsi:type="simpleocl:OclModelElement" name="Record" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="pac" variableExp="//@elements.0/@input/@elements.4/@bindings.0/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Pacman" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="grid2" variableExp="//@elements.0/@input/@elements.4/@bindings.1/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Grid" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="grid1">
+        <type xsi:type="simpleocl:OclModelElement" name="Grid" model="//@metamodels.0"/>
+        <bindings property="hasPlayer">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.0/@input/@elements.2"/>
+        </bindings>
+        <bindings property="left">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.0/@input/@elements.3"/>
+        </bindings>
+      </elements>
+      <elements varName="act">
+        <type xsi:type="simpleocl:OclModelElement" name="Action" model="//@metamodels.0"/>
+        <bindings property="DONEBY">
+          <expr xsi:type="simpleocl:IntegerExp" integerSymbol="1"/>
+        </bindings>
+        <bindings property="FRAME">
+          <expr xsi:type="simpleocl:PropertyCallExp">
+            <calls xsi:type="simpleocl:NavigationOrAttributeCall" name="FRAME"/>
+            <source xsi:type="simpleocl:VariableExp" referredVariable="//@elements.0/@input/@elements.1"/>
+          </expr>
+        </bindings>
+        <bindings property="DIRECTION">
+          <expr xsi:type="simpleocl:IntegerExp" integerSymbol="1"/>
+        </bindings>
+      </elements>
+    </input>
+    <nac>
+      <elements varName="grid2">
+        <type xsi:type="simpleocl:OclModelElement" name="Grid" model="//@metamodels.0"/>
+        <bindings property="hasEnemy">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.0/@nac.0/@elements.1"/>
+        </bindings>
+      </elements>
+      <elements varName="ghost" variableExp="//@elements.0/@nac.0/@elements.0/@bindings.0/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Ghost" model="//@metamodels.0"/>
+      </elements>
+    </nac>
+    <output>
+      <elements varName="s">
+        <type xsi:type="simpleocl:OclModelElement" name="GameState" model="//@metamodels.0"/>
+        <bindings property="STATE">
+          <expr xsi:type="simpleocl:IntegerExp" integerSymbol="4"/>
+        </bindings>
+        <bindings property="record">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.0/@output/@elements.1"/>
+        </bindings>
+      </elements>
+      <elements varName="rec" variableExp="//@elements.0/@output/@elements.0/@bindings.1/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Record" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="pac" variableExp="//@elements.0/@output/@elements.3/@bindings.0/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Pacman" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="grid2" variableExp="//@elements.0/@output/@elements.4/@bindings.0/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Grid" model="//@metamodels.0"/>
+        <bindings property="hasPlayer">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.0/@output/@elements.2"/>
+        </bindings>
+      </elements>
+      <elements varName="grid1">
+        <type xsi:type="simpleocl:OclModelElement" name="Grid" model="//@metamodels.0"/>
+        <bindings property="left">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.0/@output/@elements.3"/>
+        </bindings>
+      </elements>
+    </output>
+  </elements>
+  <elements xsi:type="simplegt:Rule" name="PlayerMoveRight">
+    <input>
+      <elements varName="s">
+        <type xsi:type="simpleocl:OclModelElement" name="GameState" model="//@metamodels.0"/>
+        <bindings property="STATE">
+          <expr xsi:type="simpleocl:IntegerExp" integerSymbol="3"/>
+        </bindings>
+        <bindings property="record">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.1/@input/@elements.1"/>
+        </bindings>
+      </elements>
+      <elements varName="rec" variableExp="//@elements.1/@input/@elements.0/@bindings.1/@expr //@elements.1/@input/@elements.5/@bindings.1/@expr/@source">
+        <type xsi:type="simpleocl:OclModelElement" name="Record" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="pac" variableExp="//@elements.1/@input/@elements.4/@bindings.0/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Pacman" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="grid2" variableExp="//@elements.1/@input/@elements.4/@bindings.1/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Grid" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="grid1">
+        <type xsi:type="simpleocl:OclModelElement" name="Grid" model="//@metamodels.0"/>
+        <bindings property="hasPlayer">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.1/@input/@elements.2"/>
+        </bindings>
+        <bindings property="right">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.1/@input/@elements.3"/>
+        </bindings>
+      </elements>
+      <elements varName="act">
+        <type xsi:type="simpleocl:OclModelElement" name="Action" model="//@metamodels.0"/>
+        <bindings property="DONEBY">
+          <expr xsi:type="simpleocl:IntegerExp" integerSymbol="1"/>
+        </bindings>
+        <bindings property="FRAME">
+          <expr xsi:type="simpleocl:PropertyCallExp">
+            <calls xsi:type="simpleocl:NavigationOrAttributeCall" name="FRAME"/>
+            <source xsi:type="simpleocl:VariableExp" referredVariable="//@elements.1/@input/@elements.1"/>
+          </expr>
+        </bindings>
+        <bindings property="DIRECTION">
+          <expr xsi:type="simpleocl:IntegerExp" integerSymbol="2"/>
+        </bindings>
+      </elements>
+    </input>
+    <nac>
+      <elements varName="grid2">
+        <type xsi:type="simpleocl:OclModelElement" name="Grid" model="//@metamodels.0"/>
+        <bindings property="hasEnemy">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.1/@nac.0/@elements.1"/>
+        </bindings>
+      </elements>
+      <elements varName="ghost" variableExp="//@elements.1/@nac.0/@elements.0/@bindings.0/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Ghost" model="//@metamodels.0"/>
+      </elements>
+    </nac>
+    <output>
+      <elements varName="s">
+        <type xsi:type="simpleocl:OclModelElement" name="GameState" model="//@metamodels.0"/>
+        <bindings property="STATE">
+          <expr xsi:type="simpleocl:IntegerExp" integerSymbol="4"/>
+        </bindings>
+        <bindings property="record">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.1/@output/@elements.1"/>
+        </bindings>
+      </elements>
+      <elements varName="rec" variableExp="//@elements.1/@output/@elements.0/@bindings.1/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Record" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="pac" variableExp="//@elements.1/@output/@elements.3/@bindings.0/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Pacman" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="grid2" variableExp="//@elements.1/@output/@elements.4/@bindings.0/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Grid" model="//@metamodels.0"/>
+        <bindings property="hasPlayer">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.1/@output/@elements.2"/>
+        </bindings>
+      </elements>
+      <elements varName="grid1">
+        <type xsi:type="simpleocl:OclModelElement" name="Grid" model="//@metamodels.0"/>
+        <bindings property="right">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.1/@output/@elements.3"/>
+        </bindings>
+      </elements>
+    </output>
+  </elements>
+  <elements xsi:type="simplegt:Rule" name="PlayerMoveTop">
+    <input>
+      <elements varName="s">
+        <type xsi:type="simpleocl:OclModelElement" name="GameState" model="//@metamodels.0"/>
+        <bindings property="STATE">
+          <expr xsi:type="simpleocl:IntegerExp" integerSymbol="3"/>
+        </bindings>
+        <bindings property="record">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.2/@input/@elements.1"/>
+        </bindings>
+      </elements>
+      <elements varName="rec" variableExp="//@elements.2/@input/@elements.0/@bindings.1/@expr //@elements.2/@input/@elements.5/@bindings.1/@expr/@source">
+        <type xsi:type="simpleocl:OclModelElement" name="Record" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="pac" variableExp="//@elements.2/@input/@elements.4/@bindings.0/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Pacman" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="grid2" variableExp="//@elements.2/@input/@elements.4/@bindings.1/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Grid" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="grid1">
+        <type xsi:type="simpleocl:OclModelElement" name="Grid" model="//@metamodels.0"/>
+        <bindings property="hasPlayer">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.2/@input/@elements.2"/>
+        </bindings>
+        <bindings property="top">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.2/@input/@elements.3"/>
+        </bindings>
+      </elements>
+      <elements varName="act">
+        <type xsi:type="simpleocl:OclModelElement" name="Action" model="//@metamodels.0"/>
+        <bindings property="DONEBY">
+          <expr xsi:type="simpleocl:IntegerExp" integerSymbol="1"/>
+        </bindings>
+        <bindings property="FRAME">
+          <expr xsi:type="simpleocl:PropertyCallExp">
+            <calls xsi:type="simpleocl:NavigationOrAttributeCall" name="FRAME"/>
+            <source xsi:type="simpleocl:VariableExp" referredVariable="//@elements.2/@input/@elements.1"/>
+          </expr>
+        </bindings>
+        <bindings property="DIRECTION">
+          <expr xsi:type="simpleocl:IntegerExp" integerSymbol="3"/>
+        </bindings>
+      </elements>
+    </input>
+    <nac>
+      <elements varName="grid2">
+        <type xsi:type="simpleocl:OclModelElement" name="Grid" model="//@metamodels.0"/>
+        <bindings property="hasEnemy">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.2/@nac.0/@elements.1"/>
+        </bindings>
+      </elements>
+      <elements varName="ghost" variableExp="//@elements.2/@nac.0/@elements.0/@bindings.0/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Ghost" model="//@metamodels.0"/>
+      </elements>
+    </nac>
+    <output>
+      <elements varName="s">
+        <type xsi:type="simpleocl:OclModelElement" name="GameState" model="//@metamodels.0"/>
+        <bindings property="STATE">
+          <expr xsi:type="simpleocl:IntegerExp" integerSymbol="4"/>
+        </bindings>
+        <bindings property="record">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.2/@output/@elements.1"/>
+        </bindings>
+      </elements>
+      <elements varName="rec" variableExp="//@elements.2/@output/@elements.0/@bindings.1/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Record" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="pac" variableExp="//@elements.2/@output/@elements.3/@bindings.0/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Pacman" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="grid2" variableExp="//@elements.2/@output/@elements.4/@bindings.0/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Grid" model="//@metamodels.0"/>
+        <bindings property="hasPlayer">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.2/@output/@elements.2"/>
+        </bindings>
+      </elements>
+      <elements varName="grid1">
+        <type xsi:type="simpleocl:OclModelElement" name="Grid" model="//@metamodels.0"/>
+        <bindings property="top">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.2/@output/@elements.3"/>
+        </bindings>
+      </elements>
+    </output>
+  </elements>
+  <elements xsi:type="simplegt:Rule" name="PlayerMoveBottom">
+    <input>
+      <elements varName="s">
+        <type xsi:type="simpleocl:OclModelElement" name="GameState" model="//@metamodels.0"/>
+        <bindings property="STATE">
+          <expr xsi:type="simpleocl:IntegerExp" integerSymbol="3"/>
+        </bindings>
+        <bindings property="record">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.3/@input/@elements.1"/>
+        </bindings>
+      </elements>
+      <elements varName="rec" variableExp="//@elements.3/@input/@elements.0/@bindings.1/@expr //@elements.3/@input/@elements.5/@bindings.1/@expr/@source">
+        <type xsi:type="simpleocl:OclModelElement" name="Record" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="pac" variableExp="//@elements.3/@input/@elements.4/@bindings.0/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Pacman" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="grid2" variableExp="//@elements.3/@input/@elements.4/@bindings.1/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Grid" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="grid1">
+        <type xsi:type="simpleocl:OclModelElement" name="Grid" model="//@metamodels.0"/>
+        <bindings property="hasPlayer">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.3/@input/@elements.2"/>
+        </bindings>
+        <bindings property="bottom">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.3/@input/@elements.3"/>
+        </bindings>
+      </elements>
+      <elements varName="act">
+        <type xsi:type="simpleocl:OclModelElement" name="Action" model="//@metamodels.0"/>
+        <bindings property="DONEBY">
+          <expr xsi:type="simpleocl:IntegerExp" integerSymbol="1"/>
+        </bindings>
+        <bindings property="FRAME">
+          <expr xsi:type="simpleocl:PropertyCallExp">
+            <calls xsi:type="simpleocl:NavigationOrAttributeCall" name="FRAME"/>
+            <source xsi:type="simpleocl:VariableExp" referredVariable="//@elements.3/@input/@elements.1"/>
+          </expr>
+        </bindings>
+        <bindings property="DIRECTION">
+          <expr xsi:type="simpleocl:IntegerExp" integerSymbol="4"/>
+        </bindings>
+      </elements>
+    </input>
+    <nac>
+      <elements varName="grid2">
+        <type xsi:type="simpleocl:OclModelElement" name="Grid" model="//@metamodels.0"/>
+        <bindings property="hasEnemy">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.3/@nac.0/@elements.1"/>
+        </bindings>
+      </elements>
+      <elements varName="ghost" variableExp="//@elements.3/@nac.0/@elements.0/@bindings.0/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Ghost" model="//@metamodels.0"/>
+      </elements>
+    </nac>
+    <output>
+      <elements varName="s">
+        <type xsi:type="simpleocl:OclModelElement" name="GameState" model="//@metamodels.0"/>
+        <bindings property="STATE">
+          <expr xsi:type="simpleocl:IntegerExp" integerSymbol="4"/>
+        </bindings>
+        <bindings property="record">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.3/@output/@elements.1"/>
+        </bindings>
+      </elements>
+      <elements varName="rec" variableExp="//@elements.3/@output/@elements.0/@bindings.1/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Record" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="pac" variableExp="//@elements.3/@output/@elements.3/@bindings.0/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Pacman" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="grid2" variableExp="//@elements.3/@output/@elements.4/@bindings.0/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Grid" model="//@metamodels.0"/>
+        <bindings property="hasPlayer">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.3/@output/@elements.2"/>
+        </bindings>
+      </elements>
+      <elements varName="grid1">
+        <type xsi:type="simpleocl:OclModelElement" name="Grid" model="//@metamodels.0"/>
+        <bindings property="bottom">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.3/@output/@elements.3"/>
+        </bindings>
+      </elements>
+    </output>
+  </elements>
+  <elements xsi:type="simplegt:Rule" name="PlayerStay">
+    <input>
+      <elements varName="s">
+        <type xsi:type="simpleocl:OclModelElement" name="GameState" model="//@metamodels.0"/>
+        <bindings property="STATE">
+          <expr xsi:type="simpleocl:IntegerExp" integerSymbol="3"/>
+        </bindings>
+        <bindings property="record">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.4/@input/@elements.1"/>
+        </bindings>
+      </elements>
+      <elements varName="rec" variableExp="//@elements.4/@input/@elements.0/@bindings.1/@expr //@elements.4/@input/@elements.4/@bindings.1/@expr/@source">
+        <type xsi:type="simpleocl:OclModelElement" name="Record" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="pac" variableExp="//@elements.4/@input/@elements.3/@bindings.0/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Pacman" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="grid1">
+        <type xsi:type="simpleocl:OclModelElement" name="Grid" model="//@metamodels.0"/>
+        <bindings property="hasPlayer">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.4/@input/@elements.2"/>
+        </bindings>
+      </elements>
+      <elements varName="act">
+        <type xsi:type="simpleocl:OclModelElement" name="Action" model="//@metamodels.0"/>
+        <bindings property="DONEBY">
+          <expr xsi:type="simpleocl:IntegerExp" integerSymbol="1"/>
+        </bindings>
+        <bindings property="FRAME">
+          <expr xsi:type="simpleocl:PropertyCallExp">
+            <calls xsi:type="simpleocl:NavigationOrAttributeCall" name="FRAME"/>
+            <source xsi:type="simpleocl:VariableExp" referredVariable="//@elements.4/@input/@elements.1"/>
+          </expr>
+        </bindings>
+        <bindings property="DIRECTION">
+          <expr xsi:type="simpleocl:IntegerExp" integerSymbol="5"/>
+        </bindings>
+      </elements>
+    </input>
+    <output>
+      <elements varName="s">
+        <type xsi:type="simpleocl:OclModelElement" name="GameState" model="//@metamodels.0"/>
+        <bindings property="STATE">
+          <expr xsi:type="simpleocl:IntegerExp" integerSymbol="4"/>
+        </bindings>
+        <bindings property="record">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.4/@output/@elements.1"/>
+        </bindings>
+      </elements>
+      <elements varName="rec" variableExp="//@elements.4/@output/@elements.0/@bindings.1/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Record" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="pac" variableExp="//@elements.4/@output/@elements.3/@bindings.0/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Pacman" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="grid1">
+        <type xsi:type="simpleocl:OclModelElement" name="Grid" model="//@metamodels.0"/>
+        <bindings property="hasPlayer">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.4/@output/@elements.2"/>
+        </bindings>
+      </elements>
+    </output>
+  </elements>
+  <elements xsi:type="simplegt:Rule" name="ghostMoveLeft">
+    <input>
+      <elements varName="s">
+        <type xsi:type="simpleocl:OclModelElement" name="GameState" model="//@metamodels.0"/>
+        <bindings property="STATE">
+          <expr xsi:type="simpleocl:IntegerExp" integerSymbol="4"/>
+        </bindings>
+        <bindings property="record">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.5/@input/@elements.1"/>
+        </bindings>
+      </elements>
+      <elements varName="rec" variableExp="//@elements.5/@input/@elements.0/@bindings.1/@expr //@elements.5/@input/@elements.5/@bindings.1/@expr/@source">
+        <type xsi:type="simpleocl:OclModelElement" name="Record" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="ghost" variableExp="//@elements.5/@input/@elements.4/@bindings.0/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Ghost" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="grid2" variableExp="//@elements.5/@input/@elements.4/@bindings.1/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Grid" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="grid1">
+        <type xsi:type="simpleocl:OclModelElement" name="Grid" model="//@metamodels.0"/>
+        <bindings property="hasEnemy">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.5/@input/@elements.2"/>
+        </bindings>
+        <bindings property="left">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.5/@input/@elements.3"/>
+        </bindings>
+      </elements>
+      <elements varName="act">
+        <type xsi:type="simpleocl:OclModelElement" name="Action" model="//@metamodels.0"/>
+        <bindings property="DONEBY">
+          <expr xsi:type="simpleocl:IntegerExp" integerSymbol="2"/>
+        </bindings>
+        <bindings property="FRAME">
+          <expr xsi:type="simpleocl:PropertyCallExp">
+            <calls xsi:type="simpleocl:NavigationOrAttributeCall" name="FRAME"/>
+            <source xsi:type="simpleocl:VariableExp" referredVariable="//@elements.5/@input/@elements.1"/>
+          </expr>
+        </bindings>
+        <bindings property="DIRECTION">
+          <expr xsi:type="simpleocl:IntegerExp" integerSymbol="1"/>
+        </bindings>
+      </elements>
+    </input>
+    <output>
+      <elements varName="s">
+        <type xsi:type="simpleocl:OclModelElement" name="GameState" model="//@metamodels.0"/>
+        <bindings property="STATE">
+          <expr xsi:type="simpleocl:IntegerExp" integerSymbol="5"/>
+        </bindings>
+        <bindings property="record">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.5/@output/@elements.1"/>
+        </bindings>
+      </elements>
+      <elements varName="rec" variableExp="//@elements.5/@output/@elements.0/@bindings.1/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Record" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="ghost" variableExp="//@elements.5/@output/@elements.3/@bindings.0/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Ghost" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="grid2" variableExp="//@elements.5/@output/@elements.4/@bindings.0/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Grid" model="//@metamodels.0"/>
+        <bindings property="hasEnemy">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.5/@output/@elements.2"/>
+        </bindings>
+      </elements>
+      <elements varName="grid1">
+        <type xsi:type="simpleocl:OclModelElement" name="Grid" model="//@metamodels.0"/>
+        <bindings property="left">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.5/@output/@elements.3"/>
+        </bindings>
+      </elements>
+    </output>
+  </elements>
+  <elements xsi:type="simplegt:Rule" name="ghostMoveRight">
+    <input>
+      <elements varName="s">
+        <type xsi:type="simpleocl:OclModelElement" name="GameState" model="//@metamodels.0"/>
+        <bindings property="STATE">
+          <expr xsi:type="simpleocl:IntegerExp" integerSymbol="4"/>
+        </bindings>
+        <bindings property="record">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.6/@input/@elements.1"/>
+        </bindings>
+      </elements>
+      <elements varName="rec" variableExp="//@elements.6/@input/@elements.0/@bindings.1/@expr //@elements.6/@input/@elements.5/@bindings.1/@expr/@source">
+        <type xsi:type="simpleocl:OclModelElement" name="Record" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="ghost" variableExp="//@elements.6/@input/@elements.4/@bindings.0/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Ghost" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="grid2" variableExp="//@elements.6/@input/@elements.4/@bindings.1/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Grid" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="grid1">
+        <type xsi:type="simpleocl:OclModelElement" name="Grid" model="//@metamodels.0"/>
+        <bindings property="hasEnemy">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.6/@input/@elements.2"/>
+        </bindings>
+        <bindings property="right">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.6/@input/@elements.3"/>
+        </bindings>
+      </elements>
+      <elements varName="act">
+        <type xsi:type="simpleocl:OclModelElement" name="Action" model="//@metamodels.0"/>
+        <bindings property="DONEBY">
+          <expr xsi:type="simpleocl:IntegerExp" integerSymbol="2"/>
+        </bindings>
+        <bindings property="FRAME">
+          <expr xsi:type="simpleocl:PropertyCallExp">
+            <calls xsi:type="simpleocl:NavigationOrAttributeCall" name="FRAME"/>
+            <source xsi:type="simpleocl:VariableExp" referredVariable="//@elements.6/@input/@elements.1"/>
+          </expr>
+        </bindings>
+        <bindings property="DIRECTION">
+          <expr xsi:type="simpleocl:IntegerExp" integerSymbol="2"/>
+        </bindings>
+      </elements>
+    </input>
+    <output>
+      <elements varName="s">
+        <type xsi:type="simpleocl:OclModelElement" name="GameState" model="//@metamodels.0"/>
+        <bindings property="STATE">
+          <expr xsi:type="simpleocl:IntegerExp" integerSymbol="5"/>
+        </bindings>
+        <bindings property="record">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.6/@output/@elements.1"/>
+        </bindings>
+      </elements>
+      <elements varName="rec" variableExp="//@elements.6/@output/@elements.0/@bindings.1/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Record" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="ghost" variableExp="//@elements.6/@output/@elements.3/@bindings.0/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Ghost" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="grid2" variableExp="//@elements.6/@output/@elements.4/@bindings.0/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Grid" model="//@metamodels.0"/>
+        <bindings property="hasEnemy">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.6/@output/@elements.2"/>
+        </bindings>
+      </elements>
+      <elements varName="grid1">
+        <type xsi:type="simpleocl:OclModelElement" name="Grid" model="//@metamodels.0"/>
+        <bindings property="right">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.6/@output/@elements.3"/>
+        </bindings>
+      </elements>
+    </output>
+  </elements>
+  <elements xsi:type="simplegt:Rule" name="ghostMoveTop">
+    <input>
+      <elements varName="s">
+        <type xsi:type="simpleocl:OclModelElement" name="GameState" model="//@metamodels.0"/>
+        <bindings property="STATE">
+          <expr xsi:type="simpleocl:IntegerExp" integerSymbol="4"/>
+        </bindings>
+        <bindings property="record">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.7/@input/@elements.1"/>
+        </bindings>
+      </elements>
+      <elements varName="rec" variableExp="//@elements.7/@input/@elements.0/@bindings.1/@expr //@elements.7/@input/@elements.5/@bindings.1/@expr/@source">
+        <type xsi:type="simpleocl:OclModelElement" name="Record" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="ghost" variableExp="//@elements.7/@input/@elements.4/@bindings.0/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Ghost" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="grid2" variableExp="//@elements.7/@input/@elements.4/@bindings.1/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Grid" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="grid1">
+        <type xsi:type="simpleocl:OclModelElement" name="Grid" model="//@metamodels.0"/>
+        <bindings property="hasEnemy">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.7/@input/@elements.2"/>
+        </bindings>
+        <bindings property="top">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.7/@input/@elements.3"/>
+        </bindings>
+      </elements>
+      <elements varName="act">
+        <type xsi:type="simpleocl:OclModelElement" name="Action" model="//@metamodels.0"/>
+        <bindings property="DONEBY">
+          <expr xsi:type="simpleocl:IntegerExp" integerSymbol="2"/>
+        </bindings>
+        <bindings property="FRAME">
+          <expr xsi:type="simpleocl:PropertyCallExp">
+            <calls xsi:type="simpleocl:NavigationOrAttributeCall" name="FRAME"/>
+            <source xsi:type="simpleocl:VariableExp" referredVariable="//@elements.7/@input/@elements.1"/>
+          </expr>
+        </bindings>
+        <bindings property="DIRECTION">
+          <expr xsi:type="simpleocl:IntegerExp" integerSymbol="3"/>
+        </bindings>
+      </elements>
+    </input>
+    <output>
+      <elements varName="s">
+        <type xsi:type="simpleocl:OclModelElement" name="GameState" model="//@metamodels.0"/>
+        <bindings property="STATE">
+          <expr xsi:type="simpleocl:IntegerExp" integerSymbol="5"/>
+        </bindings>
+        <bindings property="record">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.7/@output/@elements.1"/>
+        </bindings>
+      </elements>
+      <elements varName="rec" variableExp="//@elements.7/@output/@elements.0/@bindings.1/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Record" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="ghost" variableExp="//@elements.7/@output/@elements.3/@bindings.0/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Ghost" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="grid2" variableExp="//@elements.7/@output/@elements.4/@bindings.0/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Grid" model="//@metamodels.0"/>
+        <bindings property="hasEnemy">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.7/@output/@elements.2"/>
+        </bindings>
+      </elements>
+      <elements varName="grid1">
+        <type xsi:type="simpleocl:OclModelElement" name="Grid" model="//@metamodels.0"/>
+        <bindings property="top">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.7/@output/@elements.3"/>
+        </bindings>
+      </elements>
+    </output>
+  </elements>
+  <elements xsi:type="simplegt:Rule" name="ghostMoveBottom">
+    <input>
+      <elements varName="s">
+        <type xsi:type="simpleocl:OclModelElement" name="GameState" model="//@metamodels.0"/>
+        <bindings property="STATE">
+          <expr xsi:type="simpleocl:IntegerExp" integerSymbol="4"/>
+        </bindings>
+        <bindings property="record">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.8/@input/@elements.1"/>
+        </bindings>
+      </elements>
+      <elements varName="rec" variableExp="//@elements.8/@input/@elements.0/@bindings.1/@expr //@elements.8/@input/@elements.5/@bindings.1/@expr/@source">
+        <type xsi:type="simpleocl:OclModelElement" name="Record" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="ghost" variableExp="//@elements.8/@input/@elements.4/@bindings.0/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Ghost" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="grid2" variableExp="//@elements.8/@input/@elements.4/@bindings.1/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Grid" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="grid1">
+        <type xsi:type="simpleocl:OclModelElement" name="Grid" model="//@metamodels.0"/>
+        <bindings property="hasEnemy">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.8/@input/@elements.2"/>
+        </bindings>
+        <bindings property="bottom">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.8/@input/@elements.3"/>
+        </bindings>
+      </elements>
+      <elements varName="act">
+        <type xsi:type="simpleocl:OclModelElement" name="Action" model="//@metamodels.0"/>
+        <bindings property="DONEBY">
+          <expr xsi:type="simpleocl:IntegerExp" integerSymbol="2"/>
+        </bindings>
+        <bindings property="FRAME">
+          <expr xsi:type="simpleocl:PropertyCallExp">
+            <calls xsi:type="simpleocl:NavigationOrAttributeCall" name="FRAME"/>
+            <source xsi:type="simpleocl:VariableExp" referredVariable="//@elements.8/@input/@elements.1"/>
+          </expr>
+        </bindings>
+        <bindings property="DIRECTION">
+          <expr xsi:type="simpleocl:IntegerExp" integerSymbol="4"/>
+        </bindings>
+      </elements>
+    </input>
+    <output>
+      <elements varName="s">
+        <type xsi:type="simpleocl:OclModelElement" name="GameState" model="//@metamodels.0"/>
+        <bindings property="STATE">
+          <expr xsi:type="simpleocl:IntegerExp" integerSymbol="5"/>
+        </bindings>
+        <bindings property="record">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.8/@output/@elements.1"/>
+        </bindings>
+      </elements>
+      <elements varName="rec" variableExp="//@elements.8/@output/@elements.0/@bindings.1/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Record" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="ghost" variableExp="//@elements.8/@output/@elements.3/@bindings.0/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Ghost" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="grid2" variableExp="//@elements.8/@output/@elements.4/@bindings.0/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Grid" model="//@metamodels.0"/>
+        <bindings property="hasEnemy">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.8/@output/@elements.2"/>
+        </bindings>
+      </elements>
+      <elements varName="grid1">
+        <type xsi:type="simpleocl:OclModelElement" name="Grid" model="//@metamodels.0"/>
+        <bindings property="bottom">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.8/@output/@elements.3"/>
+        </bindings>
+      </elements>
+    </output>
+  </elements>
+  <elements xsi:type="simplegt:Rule" name="ghostStay">
+    <input>
+      <elements varName="s">
+        <type xsi:type="simpleocl:OclModelElement" name="GameState" model="//@metamodels.0"/>
+        <bindings property="STATE">
+          <expr xsi:type="simpleocl:IntegerExp" integerSymbol="4"/>
+        </bindings>
+        <bindings property="record">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.9/@input/@elements.1"/>
+        </bindings>
+      </elements>
+      <elements varName="rec" variableExp="//@elements.9/@input/@elements.0/@bindings.1/@expr //@elements.9/@input/@elements.4/@bindings.1/@expr/@source">
+        <type xsi:type="simpleocl:OclModelElement" name="Record" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="ghost" variableExp="//@elements.9/@input/@elements.3/@bindings.0/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Ghost" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="grid1">
+        <type xsi:type="simpleocl:OclModelElement" name="Grid" model="//@metamodels.0"/>
+        <bindings property="hasEnemy">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.9/@input/@elements.2"/>
+        </bindings>
+      </elements>
+      <elements varName="act">
+        <type xsi:type="simpleocl:OclModelElement" name="Action" model="//@metamodels.0"/>
+        <bindings property="DONEBY">
+          <expr xsi:type="simpleocl:IntegerExp" integerSymbol="2"/>
+        </bindings>
+        <bindings property="FRAME">
+          <expr xsi:type="simpleocl:PropertyCallExp">
+            <calls xsi:type="simpleocl:NavigationOrAttributeCall" name="FRAME"/>
+            <source xsi:type="simpleocl:VariableExp" referredVariable="//@elements.9/@input/@elements.1"/>
+          </expr>
+        </bindings>
+        <bindings property="DIRECTION">
+          <expr xsi:type="simpleocl:IntegerExp" integerSymbol="5"/>
+        </bindings>
+      </elements>
+    </input>
+    <output>
+      <elements varName="s">
+        <type xsi:type="simpleocl:OclModelElement" name="GameState" model="//@metamodels.0"/>
+        <bindings property="STATE">
+          <expr xsi:type="simpleocl:IntegerExp" integerSymbol="5"/>
+        </bindings>
+        <bindings property="record">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.9/@output/@elements.1"/>
+        </bindings>
+      </elements>
+      <elements varName="rec" variableExp="//@elements.9/@output/@elements.0/@bindings.1/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Record" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="ghost" variableExp="//@elements.9/@output/@elements.3/@bindings.0/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Ghost" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="grid1">
+        <type xsi:type="simpleocl:OclModelElement" name="Grid" model="//@metamodels.0"/>
+        <bindings property="hasEnemy">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.9/@output/@elements.2"/>
+        </bindings>
+      </elements>
+    </output>
+  </elements>
+  <elements xsi:type="simplegt:Rule" name="Collect">
+    <input>
+      <elements varName="s">
+        <type xsi:type="simpleocl:OclModelElement" name="GameState" model="//@metamodels.0"/>
+        <bindings property="STATE">
+          <expr xsi:type="simpleocl:IntegerExp" integerSymbol="5"/>
+        </bindings>
+        <bindings property="record">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.10/@input/@elements.1"/>
+        </bindings>
+      </elements>
+      <elements varName="rec" variableExp="//@elements.10/@input/@elements.0/@bindings.1/@expr //@elements.10/@output/@elements.3/@bindings.0/@expr/@source //@elements.10/@output/@elements.3/@bindings.1/@expr/@source/@source">
+        <type xsi:type="simpleocl:OclModelElement" name="Record" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="pac" variableExp="//@elements.10/@input/@elements.4/@bindings.0/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Pacman" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="gem" variableExp="//@elements.10/@input/@elements.4/@bindings.1/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Gem" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="grid">
+        <type xsi:type="simpleocl:OclModelElement" name="Grid" model="//@metamodels.0"/>
+        <bindings property="hasPlayer">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.10/@input/@elements.2"/>
+        </bindings>
+        <bindings property="hasGem">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.10/@input/@elements.3"/>
+        </bindings>
+      </elements>
+    </input>
+    <output>
+      <elements varName="s">
+        <type xsi:type="simpleocl:OclModelElement" name="GameState" model="//@metamodels.0"/>
+        <bindings property="STATE">
+          <expr xsi:type="simpleocl:IntegerExp" integerSymbol="5"/>
+        </bindings>
+        <bindings property="record">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.10/@output/@elements.3"/>
+        </bindings>
+      </elements>
+      <elements varName="grid">
+        <type xsi:type="simpleocl:OclModelElement" name="Grid" model="//@metamodels.0"/>
+        <bindings property="hasPlayer">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.10/@output/@elements.2"/>
+        </bindings>
+      </elements>
+      <elements varName="pac" variableExp="//@elements.10/@output/@elements.1/@bindings.0/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Pacman" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="recNew" variableExp="//@elements.10/@output/@elements.0/@bindings.1/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Record" model="//@metamodels.0"/>
+        <bindings property="FRAME">
+          <expr xsi:type="simpleocl:PropertyCallExp">
+            <calls xsi:type="simpleocl:NavigationOrAttributeCall" name="FRAME"/>
+            <source xsi:type="simpleocl:VariableExp" referredVariable="//@elements.10/@input/@elements.1"/>
+          </expr>
+        </bindings>
+        <bindings property="SCORE">
+          <expr xsi:type="simpleocl:AddOpCallExp" operationName="+">
+            <argument xsi:type="simpleocl:IntegerExp" integerSymbol="100"/>
+            <source xsi:type="simpleocl:PropertyCallExp">
+              <calls xsi:type="simpleocl:NavigationOrAttributeCall" name="SCORE"/>
+              <source xsi:type="simpleocl:VariableExp" referredVariable="//@elements.10/@input/@elements.1"/>
+            </source>
+          </expr>
+        </bindings>
+      </elements>
+    </output>
+  </elements>
+  <elements xsi:type="simplegt:Rule" name="Kill">
+    <input>
+      <elements varName="s">
+        <type xsi:type="simpleocl:OclModelElement" name="GameState" model="//@metamodels.0"/>
+        <bindings property="STATE">
+          <expr xsi:type="simpleocl:IntegerExp" integerSymbol="5"/>
+        </bindings>
+      </elements>
+      <elements varName="ghost" variableExp="//@elements.11/@input/@elements.3/@bindings.1/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Ghost" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="pac" variableExp="//@elements.11/@input/@elements.3/@bindings.0/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Pacman" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="grid">
+        <type xsi:type="simpleocl:OclModelElement" name="Grid" model="//@metamodels.0"/>
+        <bindings property="hasPlayer">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.11/@input/@elements.2"/>
+        </bindings>
+        <bindings property="hasEnemy">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.11/@input/@elements.1"/>
+        </bindings>
+      </elements>
+    </input>
+    <output>
+      <elements varName="s">
+        <type xsi:type="simpleocl:OclModelElement" name="GameState" model="//@metamodels.0"/>
+        <bindings property="STATE">
+          <expr xsi:type="simpleocl:IntegerExp" integerSymbol="6"/>
+        </bindings>
+      </elements>
+      <elements varName="ghost" variableExp="//@elements.11/@output/@elements.2/@bindings.0/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Ghost" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="grid">
+        <type xsi:type="simpleocl:OclModelElement" name="Grid" model="//@metamodels.0"/>
+        <bindings property="hasEnemy">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.11/@output/@elements.1"/>
+        </bindings>
+      </elements>
+    </output>
+  </elements>
+  <elements xsi:type="simplegt:Rule" name="UpdateFrame">
+    <input>
+      <elements varName="s">
+        <type xsi:type="simpleocl:OclModelElement" name="GameState" model="//@metamodels.0"/>
+        <bindings property="STATE">
+          <expr xsi:type="simpleocl:IntegerExp" integerSymbol="5"/>
+        </bindings>
+        <bindings property="record">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.12/@input/@elements.1"/>
+        </bindings>
+      </elements>
+      <elements varName="rec" variableExp="//@elements.12/@input/@elements.0/@bindings.1/@expr //@elements.12/@output/@elements.2/@bindings.0/@expr/@source/@source //@elements.12/@output/@elements.2/@bindings.1/@expr/@source">
+        <type xsi:type="simpleocl:OclModelElement" name="Record" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="pac">
+        <type xsi:type="simpleocl:OclModelElement" name="Pacman" model="//@metamodels.0"/>
+      </elements>
+    </input>
+    <output>
+      <elements varName="s">
+        <type xsi:type="simpleocl:OclModelElement" name="GameState" model="//@metamodels.0"/>
+        <bindings property="STATE">
+          <expr xsi:type="simpleocl:IntegerExp" integerSymbol="3"/>
+        </bindings>
+        <bindings property="record">
+          <expr xsi:type="simpleocl:VariableExp" referredVariable="//@elements.12/@output/@elements.2"/>
+        </bindings>
+      </elements>
+      <elements varName="pac">
+        <type xsi:type="simpleocl:OclModelElement" name="Pacman" model="//@metamodels.0"/>
+      </elements>
+      <elements varName="recNew" variableExp="//@elements.12/@output/@elements.0/@bindings.1/@expr">
+        <type xsi:type="simpleocl:OclModelElement" name="Record" model="//@metamodels.0"/>
+        <bindings property="FRAME">
+          <expr xsi:type="simpleocl:AddOpCallExp" operationName="+">
+            <argument xsi:type="simpleocl:IntegerExp" integerSymbol="1"/>
+            <source xsi:type="simpleocl:PropertyCallExp">
+              <calls xsi:type="simpleocl:NavigationOrAttributeCall" name="FRAME"/>
+              <source xsi:type="simpleocl:VariableExp" referredVariable="//@elements.12/@input/@elements.1"/>
+            </source>
+          </expr>
+        </bindings>
+        <bindings property="SCORE">
+          <expr xsi:type="simpleocl:PropertyCallExp">
+            <calls xsi:type="simpleocl:NavigationOrAttributeCall" name="SCORE"/>
+            <source xsi:type="simpleocl:VariableExp" referredVariable="//@elements.12/@input/@elements.1"/>
+          </expr>
+        </bindings>
+      </elements>
+    </output>
+  </elements>
+  <models name="b" metamodel="//@metamodels.0"/>
+</simplegt:Module>

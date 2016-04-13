@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="externalDependencies/org.antlr.runtime_3.2.0.v201101311130.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="lib" path="externalDependencies/commons-io-2.4.jar"/>
+	<classpathentry kind="lib" path="externalDependencies/emftvm2boogie.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

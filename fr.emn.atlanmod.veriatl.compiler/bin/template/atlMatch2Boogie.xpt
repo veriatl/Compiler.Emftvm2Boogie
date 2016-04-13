@@ -1,0 +1,33 @@
+
+
+«IMPORT ATL»
+«IMPORT OCL»
+
+
+«EXTENSION extension::JavaExtension»
+
+
+«DEFINE main FOR Module-»
+«FILE "ATL_match.bpl"-»
+«EXPAND printMatcherForMatchRule FOREACH elements-»
+«ENDFILE-»
+«ENDDEFINE»
+
+«DEFINE printMatcherForMatchRule FOR MatchedRule-»
+«IF this.metaType == MatchedRule-»
+«IF this.inPattern.filter == null»«ELSE»
+procedure «name»_match(«EXPAND Library::printInPattern FOREACH this.inPattern.elements SEPARATOR ': ref,'»: ref) returns (r: bool);
+  requires «EXPAND Library::printInPatternAllocation FOREACH this.inPattern.elements SEPARATOR ' && '»;
+  ensures r <==> ( printGuard_«name»($srcHeap, «EXPAND Library::printInPattern FOREACH this.inPattern.elements SEPARATOR ','») );
+
+function printGuard_«name»(hp: HeapType, «EXPAND Library::printInPattern FOREACH this.inPattern.elements SEPARATOR ': ref,'»: ref): bool
+{ «IF this.inPattern.filter == null» true «ELSE» «EXPAND OCL2Boogie::printOCLExpression("hp") FOR this.inPattern.filter» «ENDIF» }
+«ENDIF»
+«ENDIF»
+«ENDDEFINE»
+
+
+
+«DEFINE printMatcherForMatchRule FOR ModuleElement»
+«ENDDEFINE»
+

@@ -1002,11 +1002,12 @@ public class Driver {
 	}
 
 	
-	static public void genClassifierTable(String[] args) throws FileNotFoundException{
+	static public void genClassifierTable(String ATL, String module, String src, String srcId, String tar,
+			String tarId, String out) throws FileNotFoundException{
 
 		
-		ExecEnv env = ATLModelInjector.moduleLoader(args[0], args[1], args[2], args[4], args[3], args[5]);
-		String out = args[6];
+		ExecEnv env = ATLModelInjector.moduleLoader(ATL, module, src, tar, srcId, tarId);
+
 		String outPth = String.format(out+"classifierTable.bpl");
 		System.setOut(new PrintStream(new File(outPth)));
 		
@@ -1060,11 +1061,12 @@ public class Driver {
 	
 
 	
-	static public void genConstant(String[] args) throws FileNotFoundException{
+	static public void genConstant(String ATL, String module, String src, String srcId, String tar,
+			String tarId, String out) throws FileNotFoundException{
 
 		
-		ExecEnv env = ATLModelInjector.moduleLoader(args[0], args[1], args[2], args[4], args[3], args[5]);
-		String out = args[6];
+		ExecEnv env = ATLModelInjector.moduleLoader(ATL, module, src, tar, srcId, tarId);
+
 		Set<String> s = new HashSet<String>();
 		
 		for(Rule rl : env.getRules()){
@@ -1122,8 +1124,6 @@ public class Driver {
 	}
 
 	public static void main(String[] args) throws Exception {
-		genClassifierTable(args);
-		genConstant(args);
 		genBoogie(args[0], args[1], args[2], args[3], args[4], args[5], args[6]);
 
 	}

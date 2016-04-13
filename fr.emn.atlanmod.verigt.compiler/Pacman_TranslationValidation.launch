@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.ui.externaltools.ProgramLaunchConfigurationType">
+<stringAttribute key="org.eclipse.ui.externaltools.ATTR_LOCATION" value="null"/>
+<stringAttribute key="org.eclipse.ui.externaltools.ATTR_TOOL_ARGUMENTS" value="src/Prelude/auxPredicate.bpl&#10;src/Prelude/classifierTable.bpl&#10;src/Prelude/constants.bpl&#10;src/Prelude/DafnyPrelude.bpl&#10;src/Prelude/EMFTVM.bpl&#10;src/Prelude/LibOCL.bpl&#10;src/Prelude/NativeLib.bpl&#10;src/Prelude/Preconditions.bpl&#10;Pacman/SimpleGT_Rule_Encoding/classifierTable.bpl&#10;Pacman/SimpleGT_Rule_Encoding/constants.bpl&#10;Pacman/Metamodels/pacman.bpl&#10;Pacman/Metamodels/validSrc.bpl&#10;Pacman/ExecutionSemantics/ATL_apply.bpl&#10;Pacman/ExecutionSemantics/ATL_match.bpl&#10;Pacman/ExecutionSemantics/StructuralPatternMatching.bpl&#10;${resource_loc}"/>
+<stringAttribute key="org.eclipse.ui.externaltools.ATTR_WORKING_DIRECTORY" value="C:\Users\zcheng\Desktop\Eclipse\workspace\mars\fr.emn.atlanmod.verigt.compiler"/>
+</launchConfiguration>
