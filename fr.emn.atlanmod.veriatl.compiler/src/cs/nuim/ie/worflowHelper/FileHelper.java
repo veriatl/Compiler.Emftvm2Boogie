@@ -30,7 +30,7 @@ public class FileHelper {
 		File file = new File(pName); 
 		FileUtils.forceMkdir(file);
 		
-	
+		// skeleton creation
 		pthMap.put("mm","/Metamodels");
 		pthMap.put("rule","/ATL_Rule_Encoding");
 		pthMap.put("exec","/ExecutionSemantics");
