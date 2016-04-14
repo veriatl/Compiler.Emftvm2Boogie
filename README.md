@@ -13,11 +13,13 @@ It also ensures the absence of erroneous execution semantics encoded for the tar
   * contains Xpand source code that generate execution semantics of atl.
   * depend on⋅**fr.emn.atlanmod.emftvm.compiler** to generate runtime behaviour of atl.
   * contains case studies of translation validation **ER2REL** and **HSM2FSM** atl transformations.
+  * guide of how to execute veriatl (manual.pdf).
 * fr.emn.atlanmod.verigt.compiler: source code for translation validation simplegt graph transformations.
   * contains Xpand source code that generate semantics of ecore metamodel.
   * contains Xtend source code that generate execution semantics of simplegt.
   * depend on⋅**fr.emn.atlanmod.emftvm.compiler** to generate runtime behaviour of simplegt.
   * contains case studies of translation validation **Pacman** simplegt transformation.
+  * guide of how to execute verigt (manual.pdf).
 
 ## Requires
 We have tested our approach using the following setup:
