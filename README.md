@@ -7,15 +7,27 @@ It also ensures the absence of erroneous execution semantics encoded for the tar
 
 ## Structure
 * fr.emn.atlanmod.emftvm.compiler: source code for compiling .emftvm EMFTVM bytecode to .bpl Boogie file.
+* fr.emn.atlanmod.emftvm.resolve: Boogie source code for reliable prototyping resolve algorithm, draw on the operational semantics of EMFTVM bytecode in Boogie.
 * fr.emn.atlanmod.veriatl.compiler: source code for translation validation atl transformations.
-  * contains xpand source code that generate execution semantics of atl.
+  * contains Xpand source code that generate semantics of ecore metamodel.
+  * contains Xpand source code that generate execution semantics of atl.
   * depend on⋅**fr.emn.atlanmod.emftvm.compiler** to generate runtime behaviour of atl.
   * contains case studies of translation validation **ER2REL** and **HSM2FSM** atl transformations.
 * fr.emn.atlanmod.verigt.compiler: source code for translation validation simplegt graph transformations.
-  * contains xtend source code that generate execution semantics of simplegt.
+  * contains Xpand source code that generate semantics of ecore metamodel.
+  * contains Xtend source code that generate execution semantics of simplegt.
   * depend on⋅**fr.emn.atlanmod.emftvm.compiler** to generate runtime behaviour of simplegt.
   * contains case studies of translation validation **Pacman** simplegt transformation.
 
+## Requires
+We have tested our approach using the following setup:
+* Boogie 2.2 + Z3 4.3
+* Eclipse Mars + Eclipse Modeling Tools 4.5.2
+* Xtend 2.2.0 + Xpand 2.2.0
+* SimpleGT 2.0.2
+* SimpleOCL 2.0.2
+* ATL EMFTVM 3.7.0
+* ATL 3.7.0
 
 
 
