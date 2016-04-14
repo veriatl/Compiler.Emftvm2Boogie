@@ -32,15 +32,11 @@ public class FileHelper {
 		
 	
 		pthMap.put("mm","/Metamodels");
-		pthMap.put("correct","/ATL_Correctness");
 		pthMap.put("rule","/ATL_Rule_Encoding");
 		pthMap.put("exec","/ExecutionSemantics");
 		pthMap.put("atl","/Source/ATL");
-		pthMap.put("asm","/Source/ASM");
 		pthMap.put("srcmm","/Source/SRCMM");
 		pthMap.put("tarmm","/Source/TARMM");
-		pthMap.put("contract","/Source/Contract");
-		pthMap.put("contract_src","/Source/ContractSRC");
 		pthMap.put("emftvm","/Source/EMFTVM");
 		pthMap.put("atl_src","/Source/ATLSRC");
 
