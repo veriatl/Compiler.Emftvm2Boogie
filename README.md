@@ -20,6 +20,7 @@ It also ensures the absence of erroneous execution semantics encoded for the tar
   * contains case studies of translation validation **Pacman** simplegt transformation.
 
 ## Requires
+We have tested our approach using the following setup:
 * Boogie 2.2 + Z3 4.3
 * Eclipse Mars + Eclipse Modeling Tools 4.5.2
 * Xtend 2.2.0 + Xpand 2.2.0
