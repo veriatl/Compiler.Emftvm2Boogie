@@ -1,4 +1,4 @@
-VeriATL/VeriGT Quick Tour v1.0 
+VeriATL Quick Tour v1.0 
 ===
 - configure veriATL.conf
   - give the Boogie project name that VeriATL verifies against.
