@@ -434,11 +434,11 @@ stk := Seq#Take(stk, Seq#Length(stk)-3);
 
 // Instr: GETENV  
 procedure OpCode#GETENV(stk: Seq BoxType) returns(newStk: Seq BoxType);
-  ensures newStk == Seq#Build(stk, $Box(Asm));
+  ensures newStk == Seq#Build(stk, $Box(Exec));
   
 // Instr: GETENVTYPE  
 procedure OpCode#GETENVTYPE(stk: Seq BoxType) returns(newStk: Seq BoxType);
-  ensures newStk == Seq#Build(stk, $Box(dtype(Asm)));
+  ensures newStk == Seq#Build(stk, $Box(dtype(Exec)));
   
   
 //Instr: MATCH, currently not supported
@@ -446,4 +446,9 @@ procedure OpCode#GETENVTYPE(stk: Seq BoxType) returns(newStk: Seq BoxType);
 //Instr: MATCH_S, currently not supported
 
 //Instr: GET_SUPER, currently not supported
-  
+
+const unique System.reserved: ClassName;  
+const unique Exec: ref;
+  axiom Exec != null;
+  axiom dtype(Exec) <: System.reserved;
+  axiom (forall h:HeapType::read(h,Exec,alloc));

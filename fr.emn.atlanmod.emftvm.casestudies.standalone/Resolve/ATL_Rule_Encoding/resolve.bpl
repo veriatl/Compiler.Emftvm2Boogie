@@ -3,16 +3,16 @@
  */	
 procedure __resolve__(this: ref, obj: ref) returns (r: ref)
 modifies $tempHeap;
-ensures dtype(obj) != class._System.array && NTransientLink#getDefaultSourceElement#Spec(read($linkHeap,Asm,ASM.links), obj) == null
+ensures dtype(obj) != class._System.array && NTransientLink#getDefaultSourceElement#Spec(TransientLinkSet, obj) == null
 ==> r == obj;
-ensures dtype(obj) != class._System.array && !(NTransientLink#getDefaultSourceElement#Spec(read($linkHeap,Asm,ASM.links), obj) == null || !read($linkHeap, NTransientLink#getDefaultSourceElement#Spec(read($linkHeap,Asm,ASM.links), obj), alloc))
+ensures dtype(obj) != class._System.array && !(NTransientLink#getDefaultSourceElement#Spec(TransientLinkSet, obj) == null || !read($linkHeap, NTransientLink#getDefaultSourceElement#Spec(TransientLinkSet, obj), alloc))
 ==> r == getTarsBySrcs(Seq#Singleton(obj));
 ensures dtype(obj) == class._System.array ==> dtype(r) == class._System.array ;
 ensures dtype(obj) == class._System.array ==> Seq#Length(Seq#FromArray($srcHeap, obj)) == Seq#Length(Seq#FromArray($tempHeap, r));
 ensures dtype(obj) == class._System.array ==> 
 	(forall __i: int :: 0<=__i && __i<Seq#Length(Seq#FromArray($srcHeap, obj)) ==>
 		isResolved($Unbox(Seq#Index(Seq#FromArray($srcHeap, obj),__i))));
-ensures dtype(obj) != class._System.array && !(NTransientLink#getDefaultSourceElement#Spec(read($linkHeap,Asm,ASM.links), obj) == null || !read($linkHeap, NTransientLink#getDefaultSourceElement#Spec(read($linkHeap,Asm,ASM.links), obj), alloc))
+ensures dtype(obj) != class._System.array && !(NTransientLink#getDefaultSourceElement#Spec(TransientLinkSet, obj) == null || !read($linkHeap, NTransientLink#getDefaultSourceElement#Spec(TransientLinkSet, obj), alloc))
 ==> (old($tempHeap) == $tempHeap);
 {
 
@@ -128,7 +128,7 @@ invariant (forall __i: int :: 0<=__i && __i<$counter#22 ==>
 	// the follow property is useful:
 	// assume _System.array.Length($Unbox(Seq#Index(obj#21, $counter#22))) < _System.array.Length(obj#21);
 	// which is generally true for tree-like data strctures.
-	assume !(NTransientLink#getDefaultSourceElement#Spec(read($linkHeap,Asm,ASM.links), $Unbox(Seq#Index(obj#21, $counter#22))) == null || !read($linkHeap, NTransientLink#getDefaultSourceElement#Spec(read($linkHeap,Asm,ASM.links), $Unbox(Seq#Index(obj#21, $counter#22))), alloc));
+	assume !(NTransientLink#getDefaultSourceElement#Spec(TransientLinkSet, $Unbox(Seq#Index(obj#21, $counter#22))) == null || !read($linkHeap, NTransientLink#getDefaultSourceElement#Spec(TransientLinkSet, $Unbox(Seq#Index(obj#21, $counter#22))), alloc));
 	assume dtype($Unbox(Seq#Index(obj#21, $counter#22))) != class._System.array;
 	
 	// 22:	STORE lv2 
@@ -139,7 +139,7 @@ invariant (forall __i: int :: 0<=__i && __i<$counter#22 ==>
 	call stk := OpCode#LOAD(stk, e);	
 	// 25:	INVOKE __resolve__
 	_heap := $tempHeap;		
-	call obj#25 := __resolve__(this, $Unbox(e));
+	call obj#25 := __resolve__($Unbox(Seq#Index(stk, Seq#Length(stk)-2)), $Unbox(e));
 	stk := Seq#Build(Seq#Take(stk, Seq#Length(stk)-2), $Box(obj#25));
 	assume isResolved($Unbox(e));		
 	// 26:	INVOKE including()
@@ -172,7 +172,7 @@ returns
 requires Seq#Length(stk) >= 1;
 requires $Unbox(Seq#Index(stk, Seq#Length(stk)-1)) != null;
 requires read($linkHeap, $Unbox(Seq#Index(stk, Seq#Length(stk)-1)),alloc);
-ensures newStk == Seq#Build(Seq#Take(stk, Seq#Length(stk)-1), $Box(read($linkHeap, Asm, ASM.links)));
+ensures newStk == Seq#Build(Seq#Take(stk, Seq#Length(stk)-1), $Box(TransientLinkSet));
 	
 function NTransientLink#getDefaultSourceElement#Spec(links: Set ref, src: ref): ref;
 	
@@ -222,28 +222,20 @@ ensures (forall<alpha> $o: ref, $f: Field alpha ::
  * Aux data structures
  */
  
-var $tempHeap : HeapType;	// temp heap, to store tempory objects, disjoint from source/target/link heaps.
+var $tempHeap : HeapType;	// temp heap, to store temp objects, disjoint from source/target/link heaps.
 
 const unique _TransientLink : String;
 const unique _#native : String;
 const unique _Sequence : String;
 const unique _Collection : String;
-
-  axiom classifierTable[_#native, _TransientLink] == Native$TransientLink;
   axiom classifierTable[_#native, _Collection] == class._System.array;
   
 const unique class._System.Integer: ClassName;
 const unique class._System.Boolean: ClassName;
 const unique class._System.String: ClassName;
 
-// ASM-specific
-
-const unique Asm: ref;
-  axiom Asm != null;
-  axiom dtype(Asm) <: System.reserved;
-  axiom (forall h:HeapType::read(h,Asm,alloc));
-const unique ASM.links : Field (Set ref);
-const unique Native$TransientLink: ClassName;
+// TransientLinks on the $linkHeap.
+const unique TransientLinkSet: Set ref;
 
   
 function toRef<T>(x: T): ref;
