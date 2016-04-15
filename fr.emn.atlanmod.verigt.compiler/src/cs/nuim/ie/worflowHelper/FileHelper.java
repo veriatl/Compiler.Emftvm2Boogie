@@ -32,14 +32,10 @@ public class FileHelper {
 		
 	
 		pthMap.put("mm","/Metamodels");
-		pthMap.put("correct","/SimpleGT_Correctness");
 		pthMap.put("rule","/SimpleGT_Rule_Encoding");
 		pthMap.put("exec","/ExecutionSemantics");
-		pthMap.put("simplegt","/Source/SimpleGTSRC");
 		pthMap.put("simplegt_src","/Source/SimpleGTSRC");
 		pthMap.put("srcmm","/Source/SRCMM");
-		pthMap.put("contract","/Source/Contract");
-		pthMap.put("contract_src","/Source/ContractSRC");
 		pthMap.put("emftvm","/Source/EMFTVM");
 
 

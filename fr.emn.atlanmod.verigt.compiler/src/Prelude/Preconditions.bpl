@@ -13,5 +13,4 @@ forall x: ref :: x!=null && read(_hp, x, alloc) && dtype(x)<:pacman$Grid && read
 !isset(_acc, y, pacman$Grid.hasEnemy)
 )
 )
-
 }

@@ -34,9 +34,11 @@ public class xpandExec {
 		
 
 		genMetamodels(projName);	//(2) uncomment this line to generate source and target metamodels. 
-		genExternalConfigruation(projName, "_TranslationValidation");
+		
 		genExecSem(projName);
 		genRuntime(projName);
+		
+		genExternalConfigruation(projName, "_TranslationValidation");
 	}
 	
 	
