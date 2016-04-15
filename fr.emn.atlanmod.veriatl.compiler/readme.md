@@ -1,11 +1,11 @@
 VeriATL/VeriGT Quick Tour v1.0 
 ===
-- configure veriATL/veriGT.conf
-  - give the Boogie project name that VeriATL/VeriGT verifies against.
+- configure veriATL.conf
+  - give the Boogie project name that VeriATL verifies against.
   - give the path of Boogie.exe.
-- Navigate to the package *cs.nuim.ie.workflowRunner. xpandExec.java* (fr.emn.atlanmod.verigt/veriatl.compiler) is the entry point of the VeriATL/VeriGT compiler. 
+- Navigate to the package *cs.nuim.ie.workflowRunner.xpandExec.java* (fr.emn.atlanmod.veriatl.compiler) is the entry point of the VeriATL compiler. 
 - Run the entry point to get the skeleton of a Boogie project, e.g.
-  - Copy ATL/SimpleGT source files into the corresponding folder, e.g. for veriATL the following are needed:
+  - Copy ATL source files into the corresponding folder, e.g. for veriATL the following are needed:
   - model of ATL source file (ATL)
   - ATL source file (ATLSRC)
   - compiled EMFTVM file of ATL source (EMFTVM)
