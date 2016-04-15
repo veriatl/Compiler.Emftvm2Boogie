@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.ui.externaltools.ProgramLaunchConfigurationType">
+<stringAttribute key="org.eclipse.ui.externaltools.ATTR_LOCATION" value="C:\Boogie\Boogie.exe"/>
+<stringAttribute key="org.eclipse.ui.externaltools.ATTR_TOOL_ARGUMENTS" value="/nologo&#13;&#10;_Resolving_Algorithm/Prelude/DafnyPrelude.bpl&#13;&#10;_Resolving_Algorithm/Prelude/EMFTVM.bpl&#13;&#10;_Resolving_Algorithm/Prelude/LibOCL.bpl&#13;&#10;_Resolving_Algorithm/Prelude/NativeLib.bpl&#13;&#10;${resource_loc}"/>
+<stringAttribute key="org.eclipse.ui.externaltools.ATTR_WORKING_DIRECTORY" value="${workspace_loc:/fr.emn.atlanmod.emftvm.resolve}"/>
+</launchConfiguration>

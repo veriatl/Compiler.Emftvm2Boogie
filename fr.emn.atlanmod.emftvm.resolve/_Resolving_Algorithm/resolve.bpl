@@ -236,7 +236,14 @@ const unique class._System.Integer: ClassName;
 const unique class._System.Boolean: ClassName;
 const unique class._System.String: ClassName;
 
-
+// ASM-specific
+const System.reserved: ClassName;
+const unique Asm: ref;
+  axiom Asm != null;
+  axiom dtype(Asm) <: System.reserved;
+  axiom (forall h:HeapType::read(h,Asm,alloc));
+const unique ASM.links : Field (Set ref);
+const unique Native$TransientLink: ClassName;
 
   
 function toRef<T>(x: T): ref;
