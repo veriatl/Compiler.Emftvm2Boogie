@@ -20,7 +20,11 @@ It also ensures the absence of erroneous execution semantics encoded for the tar
   * depend on⋅**fr.emn.atlanmod.emftvm.compiler** to generate runtime behaviour of simplegt.
   * contains case studies of translation validation **Pacman** simplegt transformation.
   * guide of how to execute verigt (manual.pdf).
-
+* fr.emn.atlanmod.emftvm.casestudies.standalone: stand alone python application to run the case studies.
+  * Generated Boogie Code for case studies (by veriatl and verigt).
+  * Python driver to count timing and LoC of case studies.
+  * Timing and LoC results.
+ 
 ## Requires
 We have tested our approach using the following setup:
 * Boogie 2.2 + Z3 4.3
