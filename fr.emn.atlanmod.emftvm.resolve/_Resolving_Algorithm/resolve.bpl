@@ -93,7 +93,7 @@ label_17:
 call stk := OpCode#PUSH(stk, _Sequence);
 // 18:	PUSH #native 
 call stk := OpCode#PUSH(stk, _#native);
-// 19:	NEW 
+// 19:	NEW_S
 assert Seq#Length(stk) >= 2;
 havoc obj#19;
 assume obj#19!= null && !read($tempHeap, obj#19, alloc) && dtype(obj#19) == class._System.array;
