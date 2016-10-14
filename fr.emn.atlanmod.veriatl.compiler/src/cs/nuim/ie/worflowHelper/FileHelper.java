@@ -10,10 +10,7 @@ import org.apache.commons.io.FileUtils;
 
 public class FileHelper {
 
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 
-	}
 
 	
 	

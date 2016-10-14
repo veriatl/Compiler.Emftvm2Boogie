@@ -8,7 +8,7 @@ import java.util.Map;
 import org.apache.commons.io.FileUtils;
 
 
-import cs.nuim.ie.workflowRunner.xpandExec;
+import cs.nuim.ie.workflowRunner.main;
 
 public class JavaExtension {
 	enum propertyType {primitive, reference, references};
@@ -35,7 +35,7 @@ public class JavaExtension {
 	public static final HashMap<String, String> SFTable = new HashMap<String, String>();
 	
 	static {
-		String dir = xpandExec.base + "/" + xpandExec.projName + "/Metamodels/";
+		String dir = main.base + "/" + main.projName + "/Metamodels/";
 		File d = new File(dir);
 		
 		

@@ -17,7 +17,7 @@ import org.eclipse.emf.mwe.core.monitor.NullProgressMonitor;
 import cs.nuim.ie.worflowHelper.FileHelper;
 
 
-public class xpandExec {
+public class main {
 
 	public static String base = System.getProperty("user.dir");
 	public static Map<String, String> dirs ;
